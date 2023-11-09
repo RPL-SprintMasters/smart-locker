@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<title>Login - Smart Locker</title>
+{% endblock meta %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+<div class="content-container d-flex align-items-center justify-content-center mx-auto">
+    <div class="container">
+        <h2>Login - <strong>Smart Locker</strong></h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Email:</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group mb-3">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-custom btn-block">Login</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

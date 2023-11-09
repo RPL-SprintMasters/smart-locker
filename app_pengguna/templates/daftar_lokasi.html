@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <p></p>
+    <h2>{{ judul }}</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Grup Loker</th>
+                <th>Alamat Loker</th>
+                <th>Harga per 15min</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for grup_loker in grup_loker_list %}
+            <tr>
+                <td>{{ grup_loker.nama_loker }}</td>
+                <td>{{ grup_loker.alamat_loker }}</td>
+                <td>Rp{{ grup_loker.harga_loker }}</td>
+                <td><a href="{% url 'app_pengguna:daftar_loker' grup_loker.id %}" class="btn btn-info">{{ action_command }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </form>
+</div>
+{% endblock content %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<title>Smart Locker</title>
+{% endblock meta %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+<div class="content-container d-flex align-items-center justify-content-center mx-auto">
+	<div class="container">
+		<h2><strong>Smart Locker</strong></h2>
+		<div class="row">
+			<div class="col">
+				<a href="/login" class="btn btn-primary btn-custom btn-block">Login</a>
+			</div>
+			<div class="col">
+				<a href="/register" class="btn btn-primary btn-custom btn-block">Register</a>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock content %}

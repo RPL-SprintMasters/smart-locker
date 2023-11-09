@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2>{{ judul }}</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-title"><strong>Nama Loker:</strong> {{ loker_list.0.grup_loker.nama_loker }}</p>
+                    <p class="card-text"><strong>Alamat Loker:</strong> {{ loker_list.0.grup_loker.alamat_loker }}</p>
+                    <p class="card-text"><strong>Harga per 15 menit:</strong> Rp{{ loker_list.0.grup_loker.harga_loker }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>No. Loker</th>
+                        <th>Status Loker</th>
+                        {% if from_pinjam_loker %}
+                            <th>Action</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loker in loker_list %}
+                    <tr>
+                        <td>{{ loker.nomor_loker }}</td>
+                        <td>{{ loker.status_loker }}</td>
+                        {% if from_pinjam_loker %}
+                            <th><a href="{% url 'app_pengguna:open_loker' loker.id %}" class="btn btn-info">Pilih</a></th>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>    
+    </form>
+</div>
+{% endblock content %}
