@@ -1,4 +1,5 @@
 import math
+import os
 import random
 
 def generateOTP() :
@@ -8,3 +9,8 @@ def generateOTP() :
     for i in range(6):
         OTP += string[math.floor(random.random() * length)]
     return OTP
+
+def make_dir(newpath):
+    if not os.path.exists(newpath):
+        os.makedirs(newpath)
+        print(f"[MKDIR] Successfully created folder {newpath}")

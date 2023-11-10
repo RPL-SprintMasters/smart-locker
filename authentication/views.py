@@ -15,6 +15,10 @@ from utility.util import *
 from authentication.models import UserManage, Admin, Pengguna, OTPtoUser
 from app_pengguna.models import GrupLoker, Loker, TransaksiPeminjaman, TopupHistory, Notifikasi
 try:
+    UserManage.objects.create_superuser(username="admin", email="admin@gmail.com", password="admin")
+except:
+    pass
+try:
     user = UserManage.objects.create_user(username="dummy_admin", password="dummy_admin", telephone_number="1234567890", is_admin=True, is_pengguna=False)
     admin = Admin.objects.create(user=user)
     user = UserManage.objects.create_user(username="dummy_pengguna", password="dummy_pengguna", telephone_number="1234567890", is_admin=False, is_pengguna=True)    

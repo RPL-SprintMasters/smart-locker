@@ -8,6 +8,7 @@ from io import BytesIO
 import uuid
 
 from project_django import settings
+from utility.util import *
 
 @login_required
 def dashboard_pengguna(request):
@@ -41,7 +42,7 @@ def daftar_loker(request, grup_loker_id):
     context['username'] = username
     
     if 'from_pinjam_loker' in request.session:
-        loker_list = Loker.objects.filter(grup_loker__id=grup_loker_id, status=False)
+        loker_list = Loker.objects.filter(grup_loker__id=grup_loker_id, status_loker=False)
     else:
         loker_list = Loker.objects.filter(grup_loker__id=grup_loker_id)
     context['loker_list'] = loker_list
@@ -76,15 +77,17 @@ def open_loker(request, loker_id):
     loker.status_loker = True
     loker.save()
     existing_transaksi_peminjaman = TransaksiPeminjaman.objects.filter(pengguna=pengguna_obj, loker=loker, total_harga=0.0, status="ONGOING")
-    existing_loker_action = LokerAction.objects.filter(loker=loker, command="OPEN")
+    existing_loker_action = LokerAction.objects.filter(loker=loker, command="OPEN", pengguna=pengguna_obj)
     if (not existing_transaksi_peminjaman) or (not existing_loker_action):
         uuid_open_loker = str(uuid.uuid4())
-        TransaksiPeminjaman.objects.create(pengguna=pengguna_obj, loker=loker, mulaipinjam=datetime.datetime.now(), total_harga=0.0, status="ONGOING")
+        if (not existing_transaksi_peminjaman):
+            TransaksiPeminjaman.objects.create(pengguna=pengguna_obj, loker=loker, mulaipinjam=datetime.datetime.now(), total_harga=0.0, status="ONGOING")
 
         img = qrcode.make(uuid_open_loker)
         img_name = 'qr' + str(time.time()) + '.png'
+        make_dir('media')
         img.save(settings.MEDIA_ROOT + '\\' + img_name)
-        LokerAction.objects.create(uuid_code=uuid_open_loker, loker=loker, command="OPEN", img_name=img_name)
+        LokerAction.objects.create(pengguna=pengguna_obj, uuid_code=uuid_open_loker, loker=loker, command="OPEN", img_name=img_name)
 
         context['loker'] = loker
         context['img_name'] = img_name
@@ -93,5 +96,6 @@ def open_loker(request, loker_id):
         context['loker'] = loker_action.loker
         context['img_name'] = loker_action.img_name
 
-    del request.session['from_pinjam_loker']
+    if 'from_pinjam_loker' in request.session:
+        del request.session['from_pinjam_loker']
     return render(request, 'open_loker.html', context=context)

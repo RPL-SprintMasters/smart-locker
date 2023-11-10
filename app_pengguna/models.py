@@ -35,6 +35,7 @@ class Notifikasi(models.Model):
 
 class LokerAction(models.Model):
     uuid_code = models.CharField(max_length=36)
+    pengguna = models.ForeignKey(Pengguna, on_delete=models.SET_NULL, null=True)
     loker = models.ForeignKey(Loker, on_delete=models.CASCADE)
     command = models.CharField(max_length=10)
     img_name = models.CharField(max_length=36, default='')
