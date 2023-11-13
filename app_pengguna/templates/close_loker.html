@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h1 class="text-center">Pengembalian Loker</h1>
+    <h2 class="text-center">Scan pada mesin untuk membuka loker</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-title"><strong>Nama Loker:</strong> {{ loker.grup_loker.nama_loker }}</p>
+                    <p class="card-text"><strong>Alamat Loker:</strong> {{ loker.grup_loker.alamat_loker }}</p>
+                    <p class="card-text"><strong>Harga per 15 menit:</strong> Rp{{ loker.grup_loker.harga_loker }}</p>
+                    <p class="card-text"><strong>Nomor Loker:</strong> {{ loker.nomor_loker }}</p>
+                    <div class="qr-img">
+                        {% if img_name %}
+                            <img src="/media/{{ img_name }}" alt="qr code" style="width: 100%;">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+    </form>
+</div>
+{% endblock content %}

@@ -31,14 +31,17 @@
                         <input type="text" aria-labelledby="status" class="form-control" placeholder="" value="Pengguna" id="status-edit" disabled="true">
                     </div>
 				</div>
-				<div class="row mt-2">
-					<div class="col-md-6">
+				<div class="btn-toolbar mt-3 mx-3" role="toolbar" aria-label="Toolbar with button groups">
+					<div class="btn-group me-2" role="group" aria-label="First group">
 						<a href="{% url 'app_pengguna:daftar_lokasi' %}" class="btn btn-primary btn-block">Daftar Loker</a>
 					</div>
-					<div class="col-md-6">
+					<div class="btn-group me-2" role="group" aria-label="Second group">
 						<a href="{% url 'app_pengguna:pinjam_loker' %}" class="btn btn-primary btn-block">Pinjam Loker</a>
 					</div>
-				</div>					
+					<div class="btn-group" role="group" aria-label="Third group">
+						<a href="{% url 'app_pengguna:kembalikan_loker' %}" class="btn btn-primary btn-block">Kembalikan Loker</a>
+					</div>
+				  </div>				
 			</div>
 		</div>
 	</div>

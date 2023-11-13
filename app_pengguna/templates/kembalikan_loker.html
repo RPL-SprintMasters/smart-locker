@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2 class="mt-3">Pilih Loker untuk Dikembalikan</h2>
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nama Grup Loker</th>
+                    <th>Harga Loker /15min</th>
+                    <th>Alamat</th>
+                    <th>No. Loker</th>
+                    <th>Status Loker</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for loker in loker_list %}
+                <tr>
+                    <td>{{ loker.grup_loker.nama_loker }}</td>
+                    <td>{{ loker.grup_loker.harga_loker }}</td>
+                    <td>{{ loker.grup_loker.alamat_loker }}</td>
+                    <td>{{ loker.nomor_loker }}</td>
+                    <td>{{ loker.status_loker }}</td>
+                    <th><a href="{% url 'app_pengguna:close_loker' loker.id %}" class="btn btn-info">Pilih</a></th>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>    
+    </form>
+</div>
+{% endblock content %}

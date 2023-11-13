@@ -8,4 +8,6 @@ urlpatterns = [
     path('daftar_loker/<int:grup_loker_id>/', daftar_loker, name='daftar_loker'),
     path('pinjam_loker/', pinjam_loker, name='pinjam_loker'),
     path('open_loker/<int:loker_id>/', open_loker, name='open_loker'),
+    path('kembalikan_loker/', kembalikan_loker, name='kembalikan_loker'),
+    path('close_loker/<int:loker_id>/', close_loker, name='close_loker'),
 ]
