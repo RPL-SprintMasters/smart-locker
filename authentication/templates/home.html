@@ -6,16 +6,47 @@
 
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-<div class="content-container d-flex align-items-center justify-content-center mx-auto">
-	<div class="container">
-		<h2><strong>Smart Locker</strong></h2>
-		<div class="row">
-			<div class="col">
-				<a href="/login" class="btn btn-primary btn-custom btn-block">Login</a>
-			</div>
-			<div class="col">
-				<a href="/register" class="btn btn-primary btn-custom btn-block">Register</a>
-			</div>
+<div class="w-screen min-h-screen p-10 md:px-32">
+	<div class=" flex justify-end">
+		<a href="/login" class="bg-[#5DCFB5] py-2 px-10 rounded-full">Login</a>
+	</div>
+	
+	<div class="mt-10 relative flex flex-col justify-center w-full">
+		<div class="text-center">
+			<h3 class="text-xl text-[#4A4949]">Storage Solution</h3>
+			<h1 class="font-bold text-5xl">Take Lockers Anytime</h1>
+		</div>
+		<div class="grid justify-items-center">
+			<svg xmlns="http://www.w3.org/2000/svg" class="w-[350px] h-[100px] -mt-12" viewBox="0 0 517 73" fill="none">
+				<path d="M1.51335 70.6461C112.778 27.3922 371.265 -39.4768 515.099 39.0786" stroke="#D8E76A" stroke-width="5"/>
+			</svg>
+		</div>
+	</div>
+	<div class="mt-10 flex flex-col md:flex-row gap-4">
+		<p class="max-w-xs text-justify">Innovative Solutions for the Safety and Security of Your Goods. With a combination of advanced technology and elegant design, SmartLocker provides maximum protection for your valuables, from electronic devices to important documents.</p>
+		<img src="{% static '/images/landing-page.png' %}"  alt="" class="h-auto w-72 flex-grow">
+		<div>
+			<p class="font-bold text-4xl text-[#4A4949]">100<span class="text-[#5DCFB5]">+</span></p>
+			<p class="max-w-xs">Locker location in University Of Indonesia. With any size you can use right now</p>
+		</div>
+	</div>
+	<div class="flex flex-col md:flex-row md:justify-between gap-3 my-10">
+		<div class="flex flex-row md:flex-col gap-2">
+			<img src="{% static '/images/star-1-landing.png' %}"  alt="" class="h-auto w-10">
+			<h3 class="text-2xl font-bold">Register</h3>
+		</div>
+		<div class="flex  flex-row md:flex-col gap-2">
+			<img src="{% static '/images/star-2-landing.png' %}"  alt="" class="h-auto w-10">
+
+			<h3  class="text-2xl font-bold">Chose Your Lockers</h3>
+		</div>
+		<div class="flex gap-2  flex-row md:flex-col">
+			<img src="{% static '/images/star-1-landing.png' %}"  alt="" class="h-auto w-10">
+			<h3  class="text-2xl font-bold">Pay Locker</h3>
+		</div>
+		<div class="flex gap-2  flex-row md:flex-col">
+			<img src="{% static '/images/star-2-landing.png' %}"  alt="" class="h-auto w-10">
+			<h3  class="text-2xl font-bold">Start  Using It  </h3>
 		</div>
 	</div>
 </div>
