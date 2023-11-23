@@ -6,7 +6,35 @@
 
 {% block content %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-    <div class="content-container d-flex align-items-center justify-content-center mx-auto">
+
+    <div class="grid justify-items-stretch w-screen min-h-screen">
+        <div class="justify-self-center relative min-w-[429px] max-w-[429px] h-full bg-[#FFF5E5] overflow-hidden">
+            <img src="{% static '/images/bg-login.png' %}"  alt="" class="absolute w-full h-auto bottom-0">
+            <div class="relative p-5 h-full">
+                <h2 class="text-start text-4xl leading-[55px]">
+                    Register <br>User Account
+                </h2>
+    
+                <form method="post" class="w-full bg-white py-8 px-4 rounded-3xl mt-60 drop-shadow-md">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="username">Email:</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telephone">Telephone Number:</label>
+                        <input type="text" class="form-control" id="telephone" name="telephone" placeholder="Enter telephone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" class="btn bg-black hover:bg-[#4A4949] text-white btn-block rounded-full py-2 mt-14">Register</button>
+                </form>
+            </div>
+        </div>
+
+    <!-- <div class="content-container d-flex align-items-center justify-content-center mx-auto">
         <div class="container">
             <h2>Register User - <strong>Smart Locker</strong></h2>
             {% if message %}
@@ -31,5 +59,5 @@
                 <button type="submit" class="btn btn-primary btn-custom btn-block">Register</button>
             </form>
         </div>
-    </div>
+    </div> -->
 {% endblock content %}
