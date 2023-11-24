@@ -5,25 +5,28 @@
 {% endblock meta %}
 
 {% block content %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-    <div class="content-container d-flex align-items-center justify-content-center mx-auto">
-        <div class="container">
-            <h2>Verify OTP - <strong>Smart Locker</strong></h2>
-            {% if message %}
-                <div class="messages">
-                    <div class="alert alert-{{ message_flag }}">
-                        {{ message }}
-                    </div>
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"> -->
+    <div class="grid justify-items-stretch w-screen min-h-screen">
+        <div class="justify-self-center relative min-w-[429px] max-w-[429px] min-h-screen bg-[#FFF5E5] overflow-hidden">
+            <img src="{% static '/images/bg-login.png' %}"  alt="" class="absolute w-full h-auto bottom-0">
+            <div class="relative p-5 h-full">
+                <h2 class="text-start font-bold text-4xl leading-[55px]">Verify OTP <br> Smart Locker</h2>
+                <div class="w-full bg-white py-8 px-4 rounded-3xl mt-60 drop-shadow-md">
+                    {% if message %}
+                        <div class="messages">
+                            <div class="alert alert-{{ message_flag }}">
+                                {{ message }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="otp" class="text-center">Enter OTP</label>
+                            <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
+                        </div>
+                        <button type="submit" class="bg-[#4A4949] hover:bg-black w-full text-center text-white p-2 rounded-xl">Verify OTP</button>
+                    </form>
                 </div>
-            {% endif %}
-            <form method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="otp">Enter OTP:</label>
-                    <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
-                </div>
-                <button type="submit" class="btn btn-primary btn-custom btn-block">Verify OTP</button>
-            </form>
-        </div>
-    </div>
+            </div>
 {% endblock content %}
