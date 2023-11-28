@@ -19,7 +19,7 @@ try:
 except:
     pass
 try:
-    user = UserManage.objects.create_user(username="dummy_admin", password="dummy_admin", telephone_number="1234567890", is_admin=True, is_pengguna=False)
+    user = UserManage.objects.create_superuser(username="dummy_admin", email="admin1@gmail.com", password="dummy_admin", telephone_number="1234567890", is_admin=True, is_pengguna=False)
     admin = Admin.objects.create(user=user)
     user = UserManage.objects.create_user(username="dummy_pengguna", password="dummy_pengguna", telephone_number="1234567890", is_admin=False, is_pengguna=True)    
     pengguna = Pengguna.objects.create(user=user, saldo=100.00)
@@ -36,7 +36,7 @@ try:
 except:
     pass
 try:
-    user = UserManage.objects.create_user(username="dummy_admin2", password="dummy_admin2", telephone_number="1234567890", is_admin=True, is_pengguna=False)
+    user = UserManage.objects.create_superuser(username="dummy_admin2", email="admin2@gmail.com", password="dummy_admin2", telephone_number="1234567890", is_admin=True, is_pengguna=False)
     admin = Admin.objects.create(user=user)
     user = UserManage.objects.create_user(username="dummy_pengguna2", password="dummy_pengguna2", telephone_number="1234567890", is_admin=False, is_pengguna=True)    
     pengguna = Pengguna.objects.create(user=user, saldo=75.00)
@@ -57,7 +57,14 @@ except:
 ##############################################################
 
 def home(request):
-    return render(request, 'home.html')
+    try:
+        user = request.user
+        if user.is_admin:
+            return redirect('app_admin:dashboard_admin')
+        elif user.is_pengguna:
+            return redirect('app_pengguna:dashboard_pengguna')
+    except:
+        return render(request, 'home.html')
 
 def login(request):
     context = dict()
@@ -68,15 +75,15 @@ def login(request):
 
         if user is not None:
             auth_login(request, user)
+            try:
+                otp_obj = OTPtoUser.objects.get(user=user)
+                if not otp_obj.is_verified:
+                    return redirect('authentication:verify_otp')
+            except OTPtoUser.DoesNotExist:
+                pass
             if user.is_admin:
                 return redirect('app_admin:dashboard_admin')
-            else:
-                try:
-                    otp_obj = OTPtoUser.objects.get(user=user)
-                    if not otp_obj.is_verified:
-                        return redirect('authentication:verify_otp')
-                except OTPtoUser.DoesNotExist:
-                    pass
+            elif user.is_pengguna:
                 return redirect('app_pengguna:dashboard_pengguna')
         else:
             context['message'] = 'Invalid credentials'
@@ -132,7 +139,7 @@ def register_admin(request):
         telephone = request.POST['telephone']
 
         try:
-            user = UserManage.objects.create_user(username=username, password=password)
+            user = UserManage.objects.create_superuser(username=username, email=f"admin{generateOTP()}@gmail.com", password=password)
         except:
             context["message"] = 'Email sudah digunakan'
             context["message_flag"] = 'danger'

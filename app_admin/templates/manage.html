@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<title>Manage - Smart Locker</title>
+{% endblock meta %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+<div class="content-container d-flex align-items-center justify-content-center mx-auto">
+	<div class="container col-md-12">
+		<h2><strong>Manage Entity Page</strong></h2>
+		<a href="/admin_django/authentication/usermanage/" class="btn btn-primary btn-custom btn-block">Manage User</a>
+        <a href="/admin_django/authentication/pengguna/" class="btn btn-primary btn-custom btn-block">Manage Pengguna</a>
+        <a href="/admin_django/authentication/admin/" class="btn btn-primary btn-custom btn-block">Manage Admin</a>
+        <a href="/admin_django/app_pengguna/gruploker/" class="btn btn-primary btn-custom btn-block">Manage Grup Loker</a>
+        <a href="/admin_django/app_pengguna/loker/" class="btn btn-primary btn-custom btn-block">Manage Loker</a>
+        <a href="/admin_django/app_pengguna/notifikasi/" class="btn btn-primary btn-custom btn-block">Manage Notifikasi</a>
+	</div>
+</div>
+{% endblock content %}

@@ -7,3 +7,10 @@ def dashboard_admin(request):
     username = request.user.username
     context['username'] = username
     return render(request, 'dashboard_admin.html', context=context)
+
+@login_required
+def manage(request):
+    context = dict()
+    username = request.user.username
+    context['username'] = username
+    return render(request, 'manage.html', context=context)
