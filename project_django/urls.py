@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include('authentication.urls')),
     path('admin/', include('app_admin.urls')),
     path('pengguna/', include('app_pengguna.urls')),
+    path('api-from-machine/', api_from_machine, name='api_from_machine'),
     path('logout/', logout_view, name='logout'),
 ]
 if settings.DEBUG:

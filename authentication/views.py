@@ -60,6 +60,7 @@ def home(request):
     return render(request, 'home.html')
 
 def login(request):
+    context = dict()
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -78,9 +79,11 @@ def login(request):
                     pass
                 return redirect('app_pengguna:dashboard_pengguna')
         else:
-            return render(request, 'login.html', {'error_message': 'Invalid credentials'})
+            context['message'] = 'Invalid credentials'
+            context['message_flag'] = 'danger'
+            return render(request, 'login.html', context=context)
 
-    return render(request, 'login.html')
+    return render(request, 'login.html', context=context)
 
 def verify_otp(request):
     context = dict()
@@ -128,7 +131,12 @@ def register_admin(request):
         password = request.POST['password']
         telephone = request.POST['telephone']
 
-        user = UserManage.objects.create_user(username=username, password=password)
+        try:
+            user = UserManage.objects.create_user(username=username, password=password)
+        except:
+            context["message"] = 'Email sudah digunakan'
+            context["message_flag"] = 'danger'
+            return render(request, 'register_admin.html', context=context)
         user.telephone_number = telephone
         user.is_admin = True
         user.save()
@@ -136,7 +144,7 @@ def register_admin(request):
         otp_code = generateOTP()
         send_mail(
             "Konfirmasi Akun Smart Locker",
-            f'Berikut merupakan kode OTP kamu, kamu dapat melakukan konfirmasi dengan menekan tombol dibawah\n\n{otp_code}',
+            f'Berikut merupakan kode OTP kamu, kamu dapat melakukan konfirmasi dengan memasukan code tersebut pada aplikasi\n\n{otp_code}',
             "rudolfalbertus9182@gmail.com",
             [str(username).strip()],
             fail_silently=False,
@@ -160,15 +168,20 @@ def register_user(request):
         password = request.POST['password']
         telephone = request.POST['telephone']
 
-        user = UserManage.objects.create_user(username=username, password=password)
+        try:
+            user = UserManage.objects.create_user(username=username, password=password)
+        except:
+            context["message"] = 'Email sudah digunakan'
+            context["message_flag"] = 'danger'
+            return render(request, 'register_user.html', context=context)
         user.telephone_number = telephone
-        user.is_user = True
+        user.is_pengguna = True
         user.save()
 
         otp_code = generateOTP()
         send_mail(
             "Konfirmasi Akun Smart Locker",
-            f'Berikut merupakan kode OTP kamu, kamu dapat melakukan konfirmasi dengan menekan tombol dibawah\n\n{otp_code}',
+            f'Berikut merupakan kode OTP kamu, kamu dapat melakukan konfirmasi dengan memasukan code tersebut pada aplikasi\n\n{otp_code}',
             "rudolfalbertus9182@gmail.com",
             [str(username).strip()],
             fail_silently=False,

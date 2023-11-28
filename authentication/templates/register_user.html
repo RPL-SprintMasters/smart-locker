@@ -9,6 +9,11 @@
     <div class="content-container d-flex align-items-center justify-content-center mx-auto">
         <div class="container">
             <h2>Register User - <strong>Smart Locker</strong></h2>
+            {% if message %}
+                <div class="alert alert-{{message_flag}}">
+                    {{ message }}
+                </div>
+            {% endif %}
             <form method="post">
                 {% csrf_token %}
                 <div class="form-group">

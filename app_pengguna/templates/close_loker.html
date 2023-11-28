@@ -11,11 +11,18 @@
                     <p class="card-text"><strong>Alamat Loker:</strong> {{ loker.grup_loker.alamat_loker }}</p>
                     <p class="card-text"><strong>Harga per 15 menit:</strong> Rp{{ loker.grup_loker.harga_loker }}</p>
                     <p class="card-text"><strong>Nomor Loker:</strong> {{ loker.nomor_loker }}</p>
-                    <div class="qr-img">
-                        {% if img_name %}
+                    {% if message %}
+                        <div class="alert alert-{{message_flag}}">
+                            {{ message }}
+                        </div>
+                        <a href="{% url 'app_pengguna:dashboard_pengguna' %}" class="btn btn-info">Kembali ke Dashboard</a>
+                    {% endif %}
+                    {% if img_name %}
+                        <div class="qr-img">
                             <img src="/media/{{ img_name }}" alt="qr code" style="width: 100%;">
-                        {% endif %}
-                    </div>
+                        </div>
+                        <a href="{% url 'app_pengguna:close_loker' loker.id %}" class="btn btn-info">Perbarui tampilan setelah Scan</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

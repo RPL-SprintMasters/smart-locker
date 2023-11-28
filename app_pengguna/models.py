@@ -19,6 +19,9 @@ class TransaksiPeminjaman(models.Model):
     akhirpinjam = models.DateTimeField(auto_now=True)
     total_harga = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     status = models.CharField(max_length=15)
+    ### HELPER ATTRIBUT ###
+    is_scanned_open = models.BooleanField(default=False)
+    is_scanned_close = models.BooleanField(default=False)
 
 class TopupHistory(models.Model):
     pengguna = models.ForeignKey(Pengguna, on_delete=models.SET_NULL, null=True)
