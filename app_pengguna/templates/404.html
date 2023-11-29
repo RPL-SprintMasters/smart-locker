@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="grid justify-items-stretch w-screen min-h-screen">
+	<div class="row-auto justify-self-center relative min-w-[429px] max-w-[429px] min-h-screen overflow-hidden drop-shadow-md p-5 bg-[#FFFFFF]">
+        
+        <div class="text-center grid content-center w-full h-full">
+            <div>
+                <p class="mb-4">What are you doing here?!</p>
+                <img src="{% static '/images/404.png' %}"  alt="" class=" w-auto">   
+                <p>I think you.......</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

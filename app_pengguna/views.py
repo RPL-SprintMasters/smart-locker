@@ -1,5 +1,6 @@
 import datetime
 import time
+import json
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from app_pengguna.models import *
@@ -9,6 +10,8 @@ import uuid
 
 from project_django import settings
 from utility.util import *
+import midtransclient
+
 
 @login_required
 def dashboard_pengguna(request):
@@ -99,3 +102,88 @@ def open_loker(request, loker_id):
     if 'from_pinjam_loker' in request.session:
         del request.session['from_pinjam_loker']
     return render(request, 'open_loker.html', context=context)
+
+@login_required
+def topup(request):
+    context = dict()
+
+    if(request.method == "POST"):
+        pengguna_obj = get_object_or_404(Pengguna, user=request.user)
+        nominal = request.POST['nominal']
+        paymentMethod = request.POST['paymentMethod']
+        topupObj = TopupHistory.objects.create(pengguna=pengguna_obj, status='Pending', tanggal=datetime.datetime.now(),time=time.strftime("%H:%M", time.localtime()),  nominal=nominal, metode_pembayaran=paymentMethod)
+
+        paymentMethod = paymentMethod.lower()
+
+        try:
+            
+            # Create Core API instance
+            core_api = midtransclient.CoreApi(
+                is_production=False,
+                server_key=YOUR_SERVER_KEY,
+                client_key=YOUR_CLIENT_KEY
+            )
+            # Build API parameter
+            param = {
+                "payment_type": paymentMethod,
+                "transaction_details": {
+                    "gross_amount": nominal,
+                    "order_id": str(topupObj.order_id) ,
+                },
+                "gopay": {
+                }
+            }
+            # charge transaction
+            charge_response = core_api.charge(param)
+            # charge_response = json.loads(str(charge_response))
+            actions = charge_response["actions"]
+
+            topupObj.img_payment = actions[0]["url"]
+            topupObj.directlink_url = actions[1]["url"]
+            topupObj.save()
+            # redirect url
+            return redirect('app_pengguna:detail_transaction_topup', order_id=str(topupObj.order_id))
+
+        except:
+            TopupHistory.delete(topupObj)
+            return redirect('app_pengguna:topup', order_id=str(topupObj.order_id))
+            #render failed
+
+    return render(request, 'topup.html', context=context)
+
+
+@login_required
+def detail_transaction_topup(request, order_id):
+    context = dict()
+    user = get_object_or_404(Pengguna, user=request.user)
+
+    try:
+        topupDetail = TopupHistory.objects.get(pengguna=user,order_id=uuid.UUID(order_id))
+    except:
+        return render(request, '404.html' , context=context)
+
+    if topupDetail is not None:
+        core_api = midtransclient.CoreApi(
+                is_production=False,
+                server_key=YOUR_SERVER_KEY,
+                client_key=YOUR_CLIENT_KEY
+        )
+            
+        context = {
+            "order_id": str(topupDetail.order_id)[:13],
+            "status": str(topupDetail.status),
+            "tanggal": topupDetail.tanggal.strftime("%d %B %Y"),
+            "time": str(topupDetail.time)[0:5],
+            "nominal": topupDetail.nominal,
+            "metodePembayaran": topupDetail.metode_pembayaran,
+            "url":{
+                "direct_link":topupDetail.directlink_url,
+                "img_link":topupDetail.img_payment
+            }
+        }
+        return render(request, 'detail_topup.html' , context=context)
+    else:
+        return render(request, '404.html' , context=context)
+
+# def receive_notification():
+#     return null
