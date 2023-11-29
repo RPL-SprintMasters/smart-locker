@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="grid justify-items-stretch w-screen min-h-screen">
+	<div class="row-auto justify-self-center relative min-w-[429px] max-w-[429px] min-h-screen overflow-hidden drop-shadow-md bg-white p-5">
+        <div class="flex gap-2">
+            <p>Isi Saldo</p>
+        </div>
+
+        <form method="POST" class="mt-5">
+            {% csrf_token %}
+            <div class="gap-y-10 flex flex-col gap-2">
+                <p>Credit Pack</p>
+                <div class="p-2 border-2 border-[#D9D9D9] hover:border-[#5DCFB5] rounded-xl flex gap-2" >
+                    <input class="accent-[#74D4B8]" type="radio" name="nominal" value="5000" onclick="updateBorderColor(5000)">
+                        <p>Rp5.000,00</p>
+                    </input>
+                </div>
+
+                <div class="p-2 border-2 border-[#D9D9D9] hover:border-[#5DCFB5] rounded-xl  flex gap-2">
+                    <input class="accent-[#74D4B8]" type="radio"   name="nominal" value="10000" onclick="updateBorderColor(10000)">
+                        <p>Rp10.000,00</p>
+                    </input>
+                </div>
+
+                <div class="p-2 border-2 border-[#D9D9D9] hover:border-[#5DCFB5] rounded-xl flex gap-2 ">
+                    <input class="accent-[#74D4B8]" type="radio"  name="nominal" value="15000" onclick="updateBorderColor(15000)">
+                        <p>Rp15.000,00</p>
+                    </input>
+                </div>
+
+                <div class="p-2 border-2 border-[#D9D9D9] hover:border-[#5DCFB5] rounded-xl flex gap-2 ">
+                    <input class="accent-[#74D4B8]" type="radio"   name="nominal" value="20000" onclick="updateBorderColor(20000)">
+                        <p>Rp20.000,00</p>
+                    </input>
+                </div>
+
+                <div class="p-2 border-2 border-[#D9D9D9] hover:border-[#5DCFB5] rounded-xl  flex gap-2">
+                    <input class="accent-[#74D4B8]" type="radio"  name="nominal" value="30000" onclick="updateBorderColor(30000)">
+                        <p>Rp30.000,00</p>
+                    </input>
+                </div>
+            </div>
+            <div class="mt-10 flex flex-col gap-2">
+                <p>
+                    Payment Method
+                </p>
+                <div class="p-2 border-2 border-[#D9D9D9] hover:border-[#5DCFB5] rounded-xl  flex gap-2">
+                    <input class="accent-[#74D4B8]" type="radio" class="" value="Gopay" name="paymentMethod" onclick="updateBorderColorPayment('Gopay')" >
+                        <p>Gopay</p>
+                    </input>
+                </div>
+            </div>
+            <button onclick="submitForm()" class="w-full p-2 rounded-xl font-bold mt-10" style="background: linear-gradient(225deg, #6CCBB5 -49.03%, #A0D894 41.06%, #DDE86D 118.28%);">Confirm</button>
+        </form>
+    </div>
+</div>
+<script>
+    function updateBorderColor(value) {
+        // Mengubah warna border pada credit pack yang dipilih
+        var creditPacks = document.getElementsByName("nominal");
+        for (var i = 0; i < creditPacks.length; i++) {
+            var pack = creditPacks[i];
+            var packDiv = pack.parentNode;
+            if (pack.value == value) {
+                packDiv.style.border = "2px solid #5DCFB5";
+            } else {
+                packDiv.style.border = "2px solid #D9D9D9";
+            }
+        }
+    }
+
+    function updateBorderColorPayment(value){
+         // Mengubah warna border pada payment method yang dipilih
+         var paymentMethods = document.getElementsByName("paymentMethod");
+        for (var i = 0; i < paymentMethods.length; i++) {
+            var method = paymentMethods[i];
+            var methodDiv = method.parentNode;
+            if (method.checked) {
+                methodDiv.style.border = "2px solid #5DCFB5";
+            } else {
+                methodDiv.style.border = "2px solid #D9D9D9";
+            }
+        }
+    }
+
+    function submitForm() {
+        var selectedCreditPack = document.querySelector('input[name="colorSelect"]:checked');
+        var creditPackValue = selectedCreditPack ? selectedCreditPack.value : null;
+        
+        var selectedPaymentPack = document.querySelector('input[name="paymentMethod"]:checked]')
+        var paymentValue = selectedPaymentPack ? selectedPaymentPack.value : null;
+
+        if(creditPackValue || paymentValue == null){
+            alert("HEHEHE")
+        }
+        }
+
+</script>
+{% endblock content %}
