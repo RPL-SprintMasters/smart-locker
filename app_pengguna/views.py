@@ -119,9 +119,7 @@ def topup(request):
 
         paymentMethod = paymentMethod.lower()
 
-        try:
-            print(PAYMENT_SERVER_KEY)
-            
+        try:            
             # Create Core API instance
             core_api = midtransclient.CoreApi(
                 is_production=False,
@@ -191,7 +189,6 @@ def detail_transaction_topup(request, order_id):
         return render(request, '404.html' , context=context)
 @csrf_exempt 
 def receive_notification(request):
-    print(request.method)
     if(request.method == "POST"):
         data = request.body
         data = data.decode('utf-8')
@@ -205,14 +202,12 @@ def receive_notification(request):
             topup_obj = TopupHistory.objects.get(order_id = uuid.UUID(order_id))
             users_obj = topup_obj.pengguna
             if transaction_status == 'capture':
-                print(fraud_status)
                 if fraud_status == 'challenge':
                     topup_obj.status =  fraud_status
                 elif fraud_status == 'accept':
                     topup_obj.status = 'Sukses'
                 users_obj.saldo = users_obj.saldo + topup_obj.nominal
                 users_obj.save()
-                print(users_obj.saldo)
             elif transaction_status == 'cancel' or transaction_status == 'deny' or transaction_status == 'expire':
                 topupObj.status =  'Gagal'
 
