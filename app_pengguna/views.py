@@ -114,44 +114,43 @@ def kembalikan_loker(request):
     context['username'] = username
     
     pengguna_obj = get_object_or_404(Pengguna, user=request.user)
-    transaksi_peminjaman = TransaksiPeminjaman.objects.filter(pengguna=pengguna_obj, total_harga=0.0, status="ONGOING")
-    loker_list = [transaksi.loker for transaksi in transaksi_peminjaman]
-    context['loker_list'] = loker_list
+    transaksi_peminjaman_all = TransaksiPeminjaman.objects.filter(pengguna=pengguna_obj, total_harga=0.0, status="ONGOING")
+    for t in transaksi_peminjaman_all:
+        print("###")
+        print(t.id)
+        print(t.uuid_code)
+    context['transaksi_peminjaman_all'] = transaksi_peminjaman_all
 
     return render(request, 'kembalikan_loker.html', context=context)
 
 @login_required
-def close_loker(request, loker_id):
+def close_loker(request, transaksi_id):
     context = dict()
     username = request.user.username
     context['username'] = username
 
-    pengguna_obj = get_object_or_404(Pengguna, user=request.user) # mendapatkan object pengguna
-    loker = get_object_or_404(Loker, id=loker_id)   # user.getLokerFromId(loker_id)
-
-    check_is_ever_scanned = TransaksiPeminjaman.objects.filter(pengguna=pengguna_obj, loker=loker, status="FINISHED", is_scanned_close=True)
-    if (check_is_ever_scanned):
-        context['loker'] = loker
+    transaksi_peminjaman = TransaksiPeminjaman.objects.filter(id=transaksi_id)[0]
+    loker = transaksi_peminjaman.loker  # transaksi.getLoker()
+    
+    if (transaksi_peminjaman.status == "FINISHED") and (transaksi_peminjaman.is_scanned_close):
+        context['transaksi'] = transaksi_peminjaman
         context["message"] = 'Anda telah sukses mengembalikan loker, silakan kembali ke Dashboard atau berikan penilaian'
         context["message_flag"] = 'success'
         return render(request, 'close_loker.html', context=context)
 
     loker.status_loker = False # false is not used
     loker.save()
-    existing_transaksi_peminjaman_ongoing = TransaksiPeminjaman.objects.filter(pengguna=pengguna_obj, loker=loker, total_harga=0.0, status="ONGOING")
-
-    transaksi_peminjaman = existing_transaksi_peminjaman_ongoing[0]
 
     img_name = f"C_{transaksi_peminjaman.uuid_code}.png"
     if os.path.exists(settings.MEDIA_ROOT + '\\' + img_name):
-        context['loker'] = transaksi_peminjaman.loker
+        context['transaksi'] = transaksi_peminjaman
         context['img_name'] = f"C_{transaksi_peminjaman.uuid_code}.png"
         return render(request, 'close_loker.html', context=context)
 
     img = qrcode.make(f"C_{transaksi_peminjaman.uuid_code}")
     img.save(settings.MEDIA_ROOT + '\\' + img_name)
 
-    context['loker'] = loker
+    context['transaksi'] = transaksi_peminjaman
     context['img_name'] = img_name
 
     return render(request, 'close_loker.html', context=context)

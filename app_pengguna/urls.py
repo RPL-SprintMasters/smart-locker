@@ -9,7 +9,7 @@ urlpatterns = [
     path('pinjam-loker/', pinjam_loker, name='pinjam_loker'),
     path('open-loker/<int:loker_id>/', open_loker, name='open_loker'),
     path('kembalikan_loker/', kembalikan_loker, name='kembalikan_loker'),
-    path('close-loker/<int:loker_id>/', close_loker, name='close_loker'),
+    path('close-loker/<int:transaksi_id>/', close_loker, name='close_loker'),
     path('view-notification/', view_notification, name='view_notification'),
     path('hubungi-admin/', hubungi_admin, name='hubungi_admin'),
 ]

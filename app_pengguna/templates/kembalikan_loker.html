@@ -15,14 +15,14 @@
                 </tr>
             </thead>
             <tbody>
-                {% for loker in loker_list %}
+                {% for transaksi in transaksi_peminjaman_all %}
                 <tr>
-                    <td>{{ loker.grup_loker.nama_loker }}</td>
-                    <td>{{ loker.grup_loker.harga_loker }}</td>
-                    <td>{{ loker.grup_loker.alamat_loker }}</td>
-                    <td>{{ loker.nomor_loker }}</td>
-                    <td>{{ loker.status_loker }}</td>
-                    <th><a href="{% url 'app_pengguna:close_loker' loker.id %}" class="btn btn-info">Pilih</a></th>
+                    <td>{{ transaksi.loker.grup_loker.nama_loker }}</td>
+                    <td>{{ transaksi.loker.grup_loker.harga_loker }}</td>
+                    <td>{{ transaksi.loker.grup_loker.alamat_loker }}</td>
+                    <td>{{ transaksi.loker.nomor_loker }}</td>
+                    <td>{{ transaksi.loker.status_loker }}</td>
+                    <th><a href="{% url 'app_pengguna:close_loker' transaksi.id %}" class="btn btn-info">Pilih</a></th>
                 </tr>
                 {% endfor %}
             </tbody>
