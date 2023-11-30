@@ -3,6 +3,8 @@
 .venv
 env/
 venv/
+my_env/
+my_venv/
 ENV/
 env.bak/
 venv.bak/

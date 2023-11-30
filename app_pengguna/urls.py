@@ -12,4 +12,6 @@ urlpatterns = [
     path('close-loker/<int:transaksi_id>/', close_loker, name='close_loker'),
     path('view-notification/', view_notification, name='view_notification'),
     path('hubungi-admin/', hubungi_admin, name='hubungi_admin'),
+    path('topup/', topup, name='topup'),
+    path('detail/<str:order_id>/', detail_transaction_topup, name='detail_transaction_topup'),
 ]

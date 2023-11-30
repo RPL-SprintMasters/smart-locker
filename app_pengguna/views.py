@@ -1,5 +1,6 @@
 import datetime
 import time
+import json
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from app_pengguna.models import *
@@ -7,8 +8,15 @@ import qrcode
 from io import BytesIO
 import uuid
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
+import os
 from project_django import settings
 from utility.util import *
+import midtransclient
+from django.http import HttpResponse, HttpResponseNotFound
+from django.core import serializers
+from project_django.settings import PAYMENT_CLIENT_KEY, PAYMENT_SERVER_KEY
+
 
 @login_required
 def dashboard_pengguna(request):
@@ -173,3 +181,114 @@ def hubungi_admin(request):
     user_admin = available_admin.user
     whatsapp_link = f'https://api.whatsapp.com/send?phone={user_admin.telephone_number}&text=Halo admin saya {request.user.username} saya terdapat permasalah <KASUS>\n\nBerikut merupakan rinciannya:\n\n<RINCIAN-PERMASALAHAN>'
     return redirect(whatsapp_link)
+def topup(request):
+    context = dict()
+
+    if(request.method == "POST"):
+        pengguna_obj = get_object_or_404(Pengguna, user=request.user)
+        nominal = request.POST['nominal']
+        paymentMethod = request.POST['paymentMethod']
+        topupObj = TopupHistory.objects.create(pengguna=pengguna_obj, status='Pending', tanggal=datetime.datetime.now(),time=time.strftime("%H:%M", time.localtime()),  nominal=nominal, metode_pembayaran=paymentMethod)
+
+        paymentMethod = paymentMethod.lower()
+
+        try:            
+            # Create Core API instance
+            core_api = midtransclient.CoreApi(
+                is_production=False,
+                server_key=PAYMENT_SERVER_KEY,
+                client_key=PAYMENT_CLIENT_KEY
+            )
+            # Build API parameter
+            param = {
+                "payment_type": paymentMethod,
+                "transaction_details": {
+                    "gross_amount": nominal,
+                    "order_id": str(topupObj.order_id) ,
+                },
+                "gopay": {
+                }
+            }
+            # charge transaction
+            charge_response = core_api.charge(param)
+            # charge_response = json.loads(str(charge_response))
+            actions = charge_response["actions"]
+
+            topupObj.img_payment = actions[0]["url"]
+            topupObj.directlink_url = actions[1]["url"]
+            topupObj.save()
+            # redirect url
+            return redirect('app_pengguna:detail_transaction_topup', order_id=str(topupObj.order_id))
+
+        except:
+            TopupHistory.delete(topupObj)
+            return redirect('app_pengguna:topup', order_id=str(topupObj.order_id))
+            #render failed
+
+    return render(request, 'topup.html', context=context)
+
+
+@login_required
+def detail_transaction_topup(request, order_id):
+    context = dict()
+    user = get_object_or_404(Pengguna, user=request.user)
+
+    try:
+        topupDetail = TopupHistory.objects.get(pengguna=user,order_id=uuid.UUID(order_id))
+    except:
+        return render(request, '404.html' , context=context)
+
+    if topupDetail is not None:
+        if str(topupDetail.status) == "Sukses":
+            active = False
+        else:
+            active = True
+            
+        context = {
+            "order_id": str(topupDetail.order_id)[:13],
+            "status": str(topupDetail.status),
+            "tanggal": topupDetail.tanggal.strftime("%d %B %Y"),
+            "time": str(topupDetail.time)[0:5],
+            "nominal": topupDetail.nominal,
+            "metodePembayaran": topupDetail.metode_pembayaran,
+            'active': active,
+            "url":{
+                "direct_link":topupDetail.directlink_url,
+                "img_link":topupDetail.img_payment
+            }
+        }
+        return render(request, 'detail_topup.html' , context=context)
+    else:
+        return render(request, '404.html' , context=context)
+@csrf_exempt 
+def receive_notification(request):
+    if(request.method == "POST"):
+        data = request.body
+        data = data.decode('utf-8')
+        data_dict = json.loads(data)
+
+        order_id = data_dict['order_id']
+        transaction_status = data_dict['transaction_status']
+        fraud_status = data_dict['fraud_status']
+        
+        try:
+            topup_obj = TopupHistory.objects.get(order_id = uuid.UUID(order_id))
+            users_obj = topup_obj.pengguna
+            if transaction_status == 'capture':
+                if fraud_status == 'challenge':
+                    topup_obj.status =  fraud_status
+                elif fraud_status == 'accept':
+                    topup_obj.status = 'Sukses'
+                users_obj.saldo = users_obj.saldo + topup_obj.nominal
+                users_obj.save()
+            elif transaction_status == 'cancel' or transaction_status == 'deny' or transaction_status == 'expire':
+                topupObj.status =  'Gagal'
+
+            elif transaction_status == 'pending':
+                topupObj.status =  'Pending'
+
+            topup_obj.save()
+            return   HttpResponse({'message': 'Sukses'}, content_type='text/plain')
+        except:
+            return   HttpResponse({'message': 'Data tidak ditemukan'}, content_type='text/plain')
+    return   HttpResponse(serializers.serialize('json', {'message': 'Sukses'}))
