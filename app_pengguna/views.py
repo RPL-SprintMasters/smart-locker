@@ -80,7 +80,7 @@ def open_loker(request, loker_id):
     check_is_ever_scanned = TransaksiPeminjaman.objects.filter(pengguna=pengguna_obj, loker=loker, total_harga=0.0, status="ONGOING", is_scanned_open=True)
     if (check_is_ever_scanned):
         context['loker'] = loker
-        context["message"] = 'Anda telah sukses meminjam loker, silakan kembali ke Dashboard'
+        context["message"] = 'Anda telah sukses meminjam loker'
         context["message_flag"] = 'success'
         return render(request, 'open_loker.html', context=context)
 
@@ -155,3 +155,22 @@ def close_loker(request, loker_id):
     context['img_name'] = img_name
 
     return render(request, 'close_loker.html', context=context)
+
+@login_required
+def view_notification(request):
+    context = dict()
+    all_notification = Notifikasi.objects.filter(pengguna=Pengguna.objects.filter(user=request.user)[0]).order_by('-id')
+    context['all_notification'] = all_notification
+    return render(request, 'view_notification.html', context=context)
+
+@login_required
+def hubungi_admin(request):
+    context = dict()
+    all_available_admin = Admin.objects.filter(is_online=True)
+    if (all_available_admin):
+        available_admin = all_available_admin[0]
+    else:
+        available_admin = Admin.objects.all()[0]
+    user_admin = available_admin.user
+    whatsapp_link = f'https://api.whatsapp.com/send?phone={user_admin.telephone_number}&text=Halo admin saya {request.user.username} saya terdapat permasalah <KASUS>\n\nBerikut merupakan rinciannya:\n\n<RINCIAN-PERMASALAHAN>'
+    return redirect(whatsapp_link)

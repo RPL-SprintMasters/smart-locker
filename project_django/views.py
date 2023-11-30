@@ -10,8 +10,43 @@ from app_pengguna.models import *
 import uuid
 
 def logout_view(request):
+    user = request.user
+    if user.is_admin:
+        admin_obj = Admin.objects.filter(user=user)[0]
+        admin_obj.is_online = False
+        admin_obj.save()
     logout(request)
     return redirect('authentication:home')
+
+@csrf_exempt
+def api_get_all_transaksi(request):
+    resp = {}
+    all_transaksi = TransaksiPeminjaman.objects.all()
+    for transaksi in all_transaksi:
+        dictio = {}
+        dictio['mulaipinjam'] = transaksi.mulaipinjam
+        resp[f'{transaksi.uuid_code}'] = dictio
+    return JsonResponse(resp, status = 200)
+
+@csrf_exempt
+def api_post_transaksi(request):
+    resp = {}
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        uuid_code = data['uuid_code']
+        durasi = data['durasi']
+        transaksi = TransaksiPeminjaman.objects.filter(uuid_code=uuid_code)[0]
+
+        notifikasi = Notifikasi.objects.create(
+            judul=f"Jangan Lupa Mengembalikan loker {transaksi.loker.nomor_loker} pada {transaksi.loker.grup_loker.alamat_loker}",
+            pesan=f"Anda telah menggunakan loker selama {durasi} menit, jangan lupa untuk menyelesaikan peminjaman"
+        )
+        notifikasi.pengguna.add(transaksi.pengguna)
+        notifikasi.save()
+
+        resp['success'] = True
+        resp['message'] = "Sukses mengirimkan notif"
+    return JsonResponse(resp, status = 200)
 
 @csrf_exempt
 def api_from_machine(request):

@@ -15,7 +15,11 @@
                         <div class="alert alert-{{message_flag}}">
                             {{ message }}
                         </div>
-                        <a href="{% url 'app_pengguna:dashboard_pengguna' %}" class="btn btn-info">Kembali ke Dashboard</a>
+                        <div class="alert alert-{{message_flag}}" id="messageAddNotif">
+                            Anda akan mendapatkan notifikasi terkini setiap 30 menit saat peminjaman loker
+                        </div>
+                        <button id="okButton" class="btn btn-success">OK</button>
+                        <a id="dashboardButton" href="{% url 'app_pengguna:dashboard_pengguna' %}" class="btn btn-info" style="display:none;">Kembali ke Dashboard</a>
                     {% endif %}
                     {% if img_name %}
                         <div class="qr-img">
@@ -29,4 +33,18 @@
     </div>    
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var okButton = document.getElementById('okButton');
+        var dashboardButton = document.getElementById('dashboardButton');
+        var messageAddNotif = document.getElementById('messageAddNotif');
+
+        okButton.addEventListener('click', function () {
+            dashboardButton.style.display = 'inline-block';
+            okButton.style.display = 'none';
+            messageAddNotif.style.display = 'none';
+        });
+    });
+</script>
 {% endblock content %}

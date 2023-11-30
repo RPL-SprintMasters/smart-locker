@@ -9,6 +9,7 @@ class UserManage(AbstractUser):
 
 class Admin(models.Model):
     user = models.OneToOneField(UserManage, on_delete=models.CASCADE)
+    is_online = models.BooleanField(default=False)
 
 class Pengguna(models.Model):
     user = models.OneToOneField(UserManage, on_delete=models.CASCADE)
