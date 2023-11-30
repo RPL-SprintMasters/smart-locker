@@ -34,12 +34,15 @@
                     <p>Rp{{nominal}}</p>
                 </span>
             </div>
+            {% if active == True %}
             <div class="p-3 py-4 bg-white rounded-2xl text-center">
                 <p>Scan To Pay With Gopay</p>
                 <img src="{{url.img_link}}">
                 <p>or</p>
                 <button class="p-2 w-full rounded-full mt-2 bg-[#5DCFB5] hover:bg-[#8AD8B0]"  href="{{url.direct_link}}">Direct Link Payment</button>
             </div>
+            {% endif %}
+
         </div>
     </div>
 </div>

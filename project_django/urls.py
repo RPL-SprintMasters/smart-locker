@@ -20,6 +20,7 @@ from .views import *
 from django.conf import settings
 from django.urls import path, include
 from django.conf.urls.static import static
+from app_pengguna.views import receive_notification
 
 urlpatterns = [
     path('admin_django/', admin.site.urls),
@@ -27,6 +28,7 @@ urlpatterns = [
     path('admin/', include('app_admin.urls')),
     path('pengguna/', include('app_pengguna.urls')),
     path('logout/', logout_view, name='logout'),
+    path('api/notif-topup', receive_notification, name='receive_notification'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
