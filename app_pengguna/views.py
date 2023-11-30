@@ -9,12 +9,13 @@ from io import BytesIO
 import uuid
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-
+import os
 from project_django import settings
 from utility.util import *
 import midtransclient
 from django.http import HttpResponse, HttpResponseNotFound
 from django.core import serializers
+from project_django.settings import PAYMENT_CLIENT_KEY, PAYMENT_SERVER_KEY
 
 
 @login_required
@@ -192,12 +193,13 @@ def topup(request):
         paymentMethod = paymentMethod.lower()
 
         try:
+            print(PAYMENT_SERVER_KEY)
             
             # Create Core API instance
             core_api = midtransclient.CoreApi(
                 is_production=False,
-                server_key=YOUR_SERVER_KEY,
-                client_key=YOUR_CLIENT_KEY
+                server_key=PAYMENT_SERVER_KEY,
+                client_key=PAYMENT_CLIENT_KEY
             )
             # Build API parameter
             param = {
@@ -239,11 +241,10 @@ def detail_transaction_topup(request, order_id):
         return render(request, '404.html' , context=context)
 
     if topupDetail is not None:
-        core_api = midtransclient.CoreApi(
-                is_production=False,
-                server_key=YOUR_SERVER_KEY,
-                client_key=YOUR_CLIENT_KEY
-        )
+        if str(topupDetail.status) == "Sukses":
+            active = False
+        else:
+            active = True
             
         context = {
             "order_id": str(topupDetail.order_id)[:13],
@@ -252,6 +253,7 @@ def detail_transaction_topup(request, order_id):
             "time": str(topupDetail.time)[0:5],
             "nominal": topupDetail.nominal,
             "metodePembayaran": topupDetail.metode_pembayaran,
+            'active': active,
             "url":{
                 "direct_link":topupDetail.directlink_url,
                 "img_link":topupDetail.img_payment
@@ -276,15 +278,11 @@ def receive_notification(request):
             topup_obj = TopupHistory.objects.get(order_id = uuid.UUID(order_id))
             users_obj = topup_obj.pengguna
             if transaction_status == 'capture':
-                print("PASSS1")
                 print(fraud_status)
                 if fraud_status == 'challenge':
                     topup_obj.status =  fraud_status
-                    print("PASSS2")
                 elif fraud_status == 'accept':
-                    print("PASSS3")
                     topup_obj.status = 'Sukses'
-                    print("PASSS4")
                 users_obj.saldo = users_obj.saldo + topup_obj.nominal
                 users_obj.save()
                 print(users_obj.saldo)

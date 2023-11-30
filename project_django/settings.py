@@ -12,6 +12,13 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+PAYMENT_CLIENT_KEY = os.environ.get('PAYMENT_CLIENT_KEY')
+PAYMENT_SERVER_KEY = os.environ.get('PAYMENT_SERVER_KEY')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
