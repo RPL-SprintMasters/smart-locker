@@ -8,9 +8,13 @@ import qrcode
 from io import BytesIO
 import uuid
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
+
 from project_django import settings
 from utility.util import *
 import midtransclient
+from django.http import HttpResponse, HttpResponseNotFound
+from django.core import serializers
 
 
 @login_required
@@ -256,6 +260,42 @@ def detail_transaction_topup(request, order_id):
         return render(request, 'detail_topup.html' , context=context)
     else:
         return render(request, '404.html' , context=context)
+@csrf_exempt 
+def receive_notification(request):
+    print(request.method)
+    if(request.method == "POST"):
+        data = request.body
+        data = data.decode('utf-8')
+        data_dict = json.loads(data)
 
-# def receive_notification():
-#     return null
+        order_id = data_dict['order_id']
+        transaction_status = data_dict['transaction_status']
+        fraud_status = data_dict['fraud_status']
+        
+        try:
+            topup_obj = TopupHistory.objects.get(order_id = uuid.UUID(order_id))
+            users_obj = topup_obj.pengguna
+            if transaction_status == 'capture':
+                print("PASSS1")
+                print(fraud_status)
+                if fraud_status == 'challenge':
+                    topup_obj.status =  fraud_status
+                    print("PASSS2")
+                elif fraud_status == 'accept':
+                    print("PASSS3")
+                    topup_obj.status = 'Sukses'
+                    print("PASSS4")
+                users_obj.saldo = users_obj.saldo + topup_obj.nominal
+                users_obj.save()
+                print(users_obj.saldo)
+            elif transaction_status == 'cancel' or transaction_status == 'deny' or transaction_status == 'expire':
+                topupObj.status =  'Gagal'
+
+            elif transaction_status == 'pending':
+                topupObj.status =  'Pending'
+
+            topup_obj.save()
+            return   HttpResponse({'message': 'Sukses'}, content_type='text/plain')
+        except:
+            return   HttpResponse({'message': 'Data tidak ditemukan'}, content_type='text/plain')
+    return   HttpResponse(serializers.serialize('json', {'message': 'Sukses'}))
