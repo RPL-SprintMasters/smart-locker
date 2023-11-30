@@ -5,4 +5,5 @@ app_name = 'app_admin'
 urlpatterns = [
     path('dashboard/', dashboard_admin, name='dashboard_admin'),
     path('manage/', manage, name='manage'),
+    path('add-notification/', add_notification, name='add_notification'),
 ]

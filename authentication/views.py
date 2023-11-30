@@ -27,7 +27,7 @@ try:
 
     grup_loker = GrupLoker.objects.create(nama_loker="Loker Group 1", alamat_loker="Jl. Contoh No. 123", harga_loker=50.00)
     loker = Loker.objects.create(grup_loker=grup_loker, nomor_loker=1, status_loker=False)
-    transaksi = TransaksiPeminjaman.objects.create(pengguna=pengguna, loker=loker, total_harga=50.00, status="FINISHED")
+    transaksi = TransaksiPeminjaman.objects.create(uuid_code=uuid.uuid4(), pengguna=pengguna, loker=loker, total_harga=50.00, status="FINISHED")
 
     topup = TopupHistory.objects.create(pengguna=pengguna, status="Sukses", nominal=50.00, metode_pembayaran="Transfer Bank")
     admin_user = Admin.objects.get(user=user)
@@ -44,9 +44,9 @@ try:
 
     grup_loker = GrupLoker.objects.create(nama_loker="Loker Group 2", alamat_loker="Jl. Contoh No. 123", harga_loker=50.00)
     loker = Loker.objects.create(grup_loker=grup_loker, nomor_loker=1, status_loker=False)
-    transaksi = TransaksiPeminjaman.objects.create(pengguna=pengguna, loker=loker, total_harga=50.00, status="FINISHED")
+    transaksi = TransaksiPeminjaman.objects.create(uuid_code=uuid.uuid4(), pengguna=pengguna, loker=loker, total_harga=50.00, status="FINISHED")
     loker = Loker.objects.create(grup_loker=grup_loker, nomor_loker=2, status_loker=False)
-    transaksi = TransaksiPeminjaman.objects.create(pengguna=pengguna, loker=loker, total_harga=6.00, status="ONGOING")
+    transaksi = TransaksiPeminjaman.objects.create(uuid_code=uuid.uuid4(), pengguna=pengguna, loker=loker, total_harga=6.00, status="ONGOING")
     
     topup = TopupHistory.objects.create(pengguna=pengguna, status="Sukses", nominal=50.00, metode_pembayaran="OVO")
     admin_user = Admin.objects.get(user=user)
@@ -82,6 +82,9 @@ def login(request):
             except OTPtoUser.DoesNotExist:
                 pass
             if user.is_admin:
+                admin_obj = Admin.objects.filter(user=request.user)[0]
+                admin_obj.is_online = True
+                admin_obj.save()
                 return redirect('app_admin:dashboard_admin')
             elif user.is_pengguna:
                 return redirect('app_pengguna:dashboard_pengguna')
@@ -161,6 +164,7 @@ def register_admin(request):
         otp_obj.save()
 
         admin = Admin.objects.create(user=user)
+        admin.is_online = True
         admin.save()
 
         # messages.success(request, 'Registration successful!')

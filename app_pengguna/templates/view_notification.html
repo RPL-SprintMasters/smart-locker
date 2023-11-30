@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2 class="mt-2">Notification Inbox</h2>
+    <table class="table" id="serviceTable">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for notif in all_notification %}
+                <tr id="data_table">
+                    <td>{{ notif.judul }}</td>
+                    <td>{{ notif.pesan }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

@@ -32,7 +32,7 @@ class TopupHistory(models.Model):
 
 class Notifikasi(models.Model):
     pengguna = models.ManyToManyField(Pengguna)
-    pembuat = models.ForeignKey(Admin, on_delete=models.CASCADE)
+    pembuat = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True)
     waktu = models.DateTimeField(auto_now=True)
     judul = models.CharField(max_length=15)
     pesan = models.TextField()

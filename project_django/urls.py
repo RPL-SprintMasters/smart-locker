@@ -26,8 +26,10 @@ urlpatterns = [
     path('', include('authentication.urls')),
     path('admin/', include('app_admin.urls')),
     path('pengguna/', include('app_pengguna.urls')),
-    path('api-from-machine/', api_from_machine, name='api_from_machine'),
     path('logout/', logout_view, name='logout'),
+    path('api/from-machine/', api_from_machine, name='api_from_machine'),
+    path('api/get-all-transaksi/', api_get_all_transaksi, name='api_get_all_transaksi'),
+    path('api/post-transaksi/', api_post_transaksi, name='api_post_transaksi'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
