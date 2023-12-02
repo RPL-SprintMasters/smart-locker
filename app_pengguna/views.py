@@ -281,7 +281,7 @@ def receive_notification(request):
         try:
             topup_obj = TopupHistory.objects.get(order_id = uuid.UUID(order_id))
             users_obj = topup_obj.pengguna
-            if transaction_status == 'capture':
+            if transaction_status == 'capture' or transaction_status == 'settlement':
                 if fraud_status == 'challenge':
                     topup_obj.status =  fraud_status
                 elif fraud_status == 'accept':
@@ -289,13 +289,13 @@ def receive_notification(request):
                 users_obj.saldo = users_obj.saldo + topup_obj.nominal
                 users_obj.save()
             elif transaction_status == 'cancel' or transaction_status == 'deny' or transaction_status == 'expire':
-                topupObj.status =  'Gagal'
+                topup_obj.status =  'Gagal'
 
             elif transaction_status == 'pending':
-                topupObj.status =  'Pending'
+                topup_obj.status =  'Pending'
 
             topup_obj.save()
             return   HttpResponse({'message': 'Sukses'}, content_type='text/plain')
         except:
             return   HttpResponse({'message': 'Data tidak ditemukan'}, content_type='text/plain')
-    return   HttpResponse(serializers.serialize('json', {'message': 'Sukses'}))
+    return   HttpResponse({'message': 'Data tidak ditemukan'}, content_type='text/plain')
