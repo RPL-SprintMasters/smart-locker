@@ -23,6 +23,13 @@ def dashboard_pengguna(request):
     context = dict()
     username = request.user.username
     context['username'] = username
+    User = UserManage.objects.get(username = username)
+    # if User.is_admin:
+    #         return redirect('app_admin:dashboard_admin')
+    # else:
+    pengguna = Pengguna.objects.get(user=User)
+    context['saldo_user'] = pengguna.saldo
+    context['pinjaman_aktif'] = TransaksiPeminjaman.objects.filter(pengguna = pengguna, status="ONGOING")
     return render(request, 'dashboard_pengguna.html', context=context)
 
 @login_required
