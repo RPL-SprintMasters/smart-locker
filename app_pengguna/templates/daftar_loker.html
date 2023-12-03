@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_bootstrap.html' %}
 {% block content %}
 <div class="container">
     <h2>{{ judul }}</h2>
@@ -29,7 +29,9 @@
                         <td>{{ loker.nomor_loker }}</td>
                         <td>{{ loker.status_loker }}</td>
                         {% if from_pinjam_loker %}
-                            <th><a href="{% url 'app_pengguna:open_loker' loker.id %}" class="btn btn-info">Pilih</a></th>
+                        <td>
+                            <a href="#" class="btn btn-info" onclick="konfirmasiPilih('{% url 'app_pengguna:open_loker' loker.id %}')">Pilih</a>
+                        </td>
                         {% endif %}
                     </tr>
                     {% endfor %}
@@ -39,4 +41,15 @@
     </div>    
     </form>
 </div>
+
+<script>
+    function konfirmasiPilih(url) {
+        var konfirmasi = confirm("Apakah Anda yakin ingin memilih loker?");
+        if (konfirmasi) {
+            window.location.href = url;
+        } else {
+            // handle
+        }
+    }
+</script>
 {% endblock content %}
