@@ -16,6 +16,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+          content: [
+              './templates/**/*.html',
+              './node_modules/flowbite/**/*.js'
+          ],
           theme: {
             extend: {
               colors: {
