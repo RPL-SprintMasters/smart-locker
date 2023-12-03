@@ -30,7 +30,7 @@
 						<a href="{% url 'app_pengguna:hubungi_admin' %}" class="block py-2 px-3 rounded text-gray-400">Hubungin Admin</a>
 					</li>
 					<li>
-						<a href="{% url 'app_pengguna:dashboard_pengguna'%}" class="block py-2 px-3 rounded text-[#870000]">Log Out</a>
+						<a href="{% url 'logout' %}" class="block py-2 px-3 rounded text-[#870000]">Log Out</a>
 					</li>
 				</ul>
 			</div>
@@ -84,7 +84,7 @@
 					</div>
 					<p class="mt-2 text-xs text-center">Pinjam Loker</p>
 				</a>
-				<a class="hover:no-underline hover:text-[#6CCBB5]">
+				<a class="hover:no-underline hover:text-[#6CCBB5]" href="{% url 'app_pengguna:kembalikan_loker' %}">
 					<div class="flex justify-center">
 						<img src="{% static '/images/kembali-icon.png' %}"  alt="" class=" h-8 w-auto">
 					</div>

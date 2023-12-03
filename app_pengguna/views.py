@@ -24,9 +24,8 @@ def dashboard_pengguna(request):
     username = request.user.username
     context['username'] = username
     User = UserManage.objects.get(username = username)
-    # if User.is_admin:
-    #         return redirect('app_admin:dashboard_admin')
-    # else:
+    if 'from_pinjam_loker' in request.session:
+        del request.session['from_pinjam_loker']
     pengguna = Pengguna.objects.get(user=User)
     context['saldo_user'] = pengguna.saldo
     context['pinjaman_aktif'] = TransaksiPeminjaman.objects.filter(pengguna = pengguna, status="ONGOING")
@@ -188,6 +187,7 @@ def hubungi_admin(request):
     user_admin = available_admin.user
     whatsapp_link = f'https://api.whatsapp.com/send?phone={user_admin.telephone_number}&text=Halo admin saya {request.user.username} saya terdapat permasalah <KASUS>\n\nBerikut merupakan rinciannya:\n\n<RINCIAN-PERMASALAHAN>'
     return redirect(whatsapp_link)
+
 def topup(request):
     context = dict()
 
@@ -267,6 +267,7 @@ def detail_transaction_topup(request, order_id):
         return render(request, 'detail_topup.html' , context=context)
     else:
         return render(request, '404.html' , context=context)
+    
 @csrf_exempt 
 def receive_notification(request):
     if(request.method == "POST"):
@@ -289,10 +290,10 @@ def receive_notification(request):
                 users_obj.saldo = users_obj.saldo + topup_obj.nominal
                 users_obj.save()
             elif transaction_status == 'cancel' or transaction_status == 'deny' or transaction_status == 'expire':
-                topupObj.status =  'Gagal'
+                topup_obj.status =  'Gagal'
 
             elif transaction_status == 'pending':
-                topupObj.status =  'Pending'
+                topup_obj.status =  'Pending'
 
             topup_obj.save()
             return   HttpResponse({'message': 'Sukses'}, content_type='text/plain')
