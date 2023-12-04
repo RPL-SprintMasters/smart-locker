@@ -13,5 +13,6 @@ urlpatterns = [
     path('view-notification/', view_notification, name='view_notification'),
     path('hubungi-admin/', hubungi_admin, name='hubungi_admin'),
     path('topup/', topup, name='topup'),
+    path('history/topup', history_topup, name='history_topup'),
     path('detail/<str:order_id>/', detail_transaction_topup, name='detail_transaction_topup'),
 ]
