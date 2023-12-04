@@ -21,9 +21,9 @@
                         <button id="okButton" class="btn btn-success">OK</button>
                         <a id="dashboardButton" href="{% url 'app_pengguna:dashboard_pengguna' %}" class="btn btn-info" style="display:none;">Kembali ke Dashboard</a>
                     {% endif %}
-                    {% if img_name %}
+                    {% if img_base64 %}
                         <div class="qr-img">
-                            <img src="/media/{{ img_name }}" alt="qr code" style="width: 100%;">
+                            <img src="data:image/png;base64,{{img_base64}}" alt="qr code" style="width: 100%;">
                         </div>
                         <a href="{% url 'app_pengguna:open_loker' loker.id %}" class="btn btn-info">Perbarui tampilan setelah Scan</a>
                     {% endif %}
