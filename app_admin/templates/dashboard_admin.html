@@ -12,7 +12,6 @@
 		<div class="flex gap-3 items-center  overflow-x-auto">
 			<p class="text-[#3F5F8B]">{{username}}</p>
 			<img src="{% static '/images/person.png' %}"  alt="" class=" h-8 w-auto">
-			<a href="{% url 'logout' %}" class="block py-2 px-3 rounded text-[#870000]">Log Out</a>
 		</div>
 	</div>
 
@@ -37,6 +36,12 @@
 					<div class=" flex gap-4 p-3 items-center">
 						<img src="{% static '/images/whatssapp.png' %}"  alt="" class=" h-7 w-auto">
 						<p class="text-[#3F5F8B]">Open Whatsapp</p>
+					</div>
+				</a>
+				<a href="{% url 'logout' %}" >
+					<div class=" flex gap-4 p-3 items-center">
+						<img src="{% static '/images/logout.png' %}"  alt="" class=" h-7 w-auto">
+						<p class="text-[#801336] ">Log Out</p>
 					</div>
 				</a>
 			</div>

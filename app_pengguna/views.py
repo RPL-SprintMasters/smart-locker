@@ -235,11 +235,23 @@ def topup(request):
 
         except:
             TopupHistory.delete(topupObj)
-            return redirect('app_pengguna:topup', order_id=str(topupObj.order_id))
-            #render failed
+            return redirect('app_pengguna:topup')
 
     return render(request, 'topup.html', context=context)
 
+@login_required
+def history_topup(request):
+    context = dict()
+    user = get_object_or_404(Pengguna, user=request.user)
+    topupList = TopupHistory.objects.filter(pengguna = user)
+    print(topupList)
+    if(len(topupList) == 0):
+        context['status'] = False
+    else:
+        context['status'] = True
+
+    context['data'] = topupList
+    return render(request, 'history_topup.html' , context=context)
 
 @login_required
 def detail_transaction_topup(request, order_id):
