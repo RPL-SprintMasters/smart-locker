@@ -9,6 +9,22 @@ def dashboard_admin(request):
     context = dict()
     username = request.user.username
     context['username'] = username
+
+    allTransaksi = TransaksiPeminjaman.objects.all()
+    onGoingTransaksi = TransaksiPeminjaman.objects.filter(status = "ONGOING")
+    context['transaksi'] = allTransaksi
+    context['jumlah_user'] = len(Pengguna.objects.all())
+    context['loker_aktif'] = len(onGoingTransaksi)
+    context['jumlah_transaksi'] = len(TransaksiPeminjaman.objects.all())
+
+    list_of_groupLoker = []
+    for transaksi in onGoingTransaksi:
+        if(transaksi.loker.grup_loker):
+            list_of_groupLoker.append(transaksi.loker.grup_loker)
+        else:
+            continue
+    context['jumlah_grup_loker_aktif'] = len(list_of_groupLoker)
+    
     return render(request, 'dashboard_admin.html', context=context)
 
 @login_required

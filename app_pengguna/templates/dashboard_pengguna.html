@@ -5,55 +5,111 @@
 {% endblock meta %}
 
 {% block content %}
-<div class="content-container d-flex align-items-center justify-content-center mx-auto ">
-	<div class="container rounded mt-2 mb-2">
-		<div class="row align-items-center">
-			<div class="col-md-3 align-items-center">
-				<div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5 border border-secondary mb-2" width="150px" alt="default profile picture" src="https://static.vecteezy.com/system/resources/thumbnails/002/534/006/small/social-media-chatting-online-blank-profile-picture-head-and-body-icon-people-standing-icon-grey-background-free-vector.jpg">
-					<span class="font-weight-bold" id="full-name"></span>
-					<span class="text-black-50" id="username1"></span>
-					<span class="fw-light" id="contributor"></span>
+
+<div class="grid justify-items-stretch w-screen min-h-screen">
+	<div class="row-auto justify-self-center relative min-w-[429px] max-w-[429px] min-h-screen overflow-hidden drop-shadow-md bg-white">
+		<div class="px-4 pt-5 pb-3 w-full">
+			<div class="flex justify-between w-full">
+				<nav class="bg-white border-gray-200">
+					<div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto">
+						 <button data-collapse-toggle="navbar-dropdown" type="button" class="inline-flex items-center w-10 h-10 justify-center text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-dropdown" aria-expanded="false">
+							<svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+							</svg>
+						</button>
+					</div>
+				</nav>
+				<a href="{% url 'app_pengguna:view_notification' %}"><img src="{% static '/images/bell-icon.png' %}"  alt="" class=" h-8 w-auto"></a>
+			</div>
+			<div class="hidden w-full keyframes-slideDown" id="navbar-dropdown">
+				<ul class="flex flex-col font-medium p-4  mt-4 border border-gray-100 rounded-lg bg-gray-50 ">
+					<li>
+						<a href="#" class="block py-2 px-3 text-white rounded bg-[#5DCFB5] " aria-current="page">Home</a>
+					</li>
+					<li>
+						<a href="{% url 'app_pengguna:history_topup' %}" class="block py-2 px-3 rounded text-gray-400">History Top Up</a>
+					</li>
+					<li>
+						<a href="{% url 'app_pengguna:hubungi_admin' %}" class="block py-2 px-3 rounded text-gray-400">Hubungin Admin</a>
+					</li>
+					<li>
+						<a href="{% url 'logout' %}" class="block py-2 px-3 rounded text-[#870000]">Log Out</a>
+					</li>
+				</ul>
+			</div>
+			<p class="text-xl p-2">Hi {{username}},</br> Welcome back👋</p>
+		</div>
+
+		<div id="default-carousel" class="relative w-full" data-carousel="slide">
+			<!-- Carousel wrapper -->
+			<div class="relative w-full h-48 overflow-hidden rounded-lg bg-[#FFF5E5] z-0">
+				 <!-- Item 1 -->
+				<div class="hidden duration-700 ease-in-out bg-blue w-full" data-carousel-item>
+					 <img src="{% static '/images/iklan-1.png' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="..."> 
+				</div>
+				<!-- Item 2 -->
+				<div class="hidden duration-700 ease-in-out  w-full" data-carousel-item>
+					<img src="{% static '/images/iklan-1.png' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="..."> 
+				</div>
+				<!-- Item 3 -->
+				<div class="hidden duration-700 ease-in-out  w-full" data-carousel-item>
+					<img src="{% static '/images/bell-icon.png' %}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="..."> 
 				</div>
 			</div>
-			<div class="col-md-9">
-				<div class="d-flex justify-content-between align-items-center">
-					<h3><strong>Dashboard</strong></h3>
+		</div>
+		
+		<div class="px-4 gap-4 z-100">
+			<div class="rounded-xl drop-shadow-md bg-white p-3 -mt-10 flex justify-between">
+				<div class="self-center">
+					<p class="text-[#5DCFB5]">Saldo Anda</p>
+					<p class="font-bold">Rp{{saldo_user}}</p>
 				</div>
-				<div class="row mt-2">
-					<div class="col-md-12">
-                        <label class="labels">Email</label>
-                        <input type="text" aria-labelledby="nama" class="form-control" placeholder="" value="{{ username }}" id="nama" disabled="true">
-                    </div>
-				</div>
-				<div class="row mt-2">
-					<div class="col-md-12">
-                        <label class="labels">Role</label>
-                        <input type="text" aria-labelledby="status" class="form-control" placeholder="" value="Pengguna" id="status-edit" disabled="true">
-                    </div>
-				</div>
-				<div class="btn-toolbar mt-3 mx-3" role="toolbar" aria-label="Toolbar with button groups">
-					<div class="btn-group me-2" role="group" aria-label="First group">
-						<a href="{% url 'app_pengguna:daftar_lokasi' %}" class="btn btn-primary btn-block">Daftar Loker</a>
+				<a href="{% url 'app_pengguna:topup' %}" class="p-2 flex-col justify-center rounded-xl hover:no-underline" style="background: linear-gradient(225deg, #6CCBB5 -49.03%, #A0D894 41.06%, #DDE86D 118.28%);">
+					<div class="flex justify-center">
+						<svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+							<path d="M20.5 11H15C14.4477 11 14 10.5523 14 10V4.5C14 3.67157 13.3284 3 12.5 3C11.6716 3 11 3.67157 11 4.5V10C11 10.5523 10.5523 11 10 11H4.5C3.67157 11 3 11.6716 3 12.5C3 13.3284 3.67157 14 4.5 14H10C10.5523 14 11 14.4477 11 15V20.5C11 21.3284 11.6716 22 12.5 22C13.3284 22 14 21.3284 14 20.5V15C14 14.4477 14.4477 14 15 14H20.5C21.3284 14 22 13.3284 22 12.5C22 11.6716 21.3284 11 20.5 11Z" fill="white"/>
+						</svg>
 					</div>
-					<div class="btn-group me-2" role="group" aria-label="Second group">
-						<a href="{% url 'app_pengguna:pinjam_loker' %}" class="btn btn-primary btn-block">Pinjam Loker</a>
-					</div>
-					<div class="btn-group" role="group" aria-label="Third group">
-						<a href="{% url 'app_pengguna:kembalikan_loker' %}" class="btn btn-primary btn-block">Kembalikan Loker</a>
-					</div>
-				</div>		
-				<div class="btn-toolbar mt-3 mx-3" role="toolbar" aria-label="Toolbar with button groups">
-					<div class="btn-group" role="group" aria-label="First group">
-						<a href="{% url 'app_pengguna:view_notification' %}" class="btn btn-primary btn-block">Notification Inbox</a>
-					</div>
-					<div class="btn-group" role="group" aria-label="First group">
-						<a href="{% url 'app_pengguna:history_transaksi' %}" target="_blank" class="btn btn-primary btn-block ml-2">History Transaksi</a>
-					</div>
-					<div class="btn-group" role="group" aria-label="First group">
-						<a href="{% url 'app_pengguna:hubungi_admin' %}" target="_blank" class="btn btn-success btn-block ml-2">Minta Bantuan</a>
-					</div>
+					<p class="font-medium text-xs text-white">Top Up</p>
+				</a>
+			</div>
 
-				</div>		
+			<div class="grid grid-cols-3 mt-4">
+				<a class="hover:no-underline hover:text-[#6CCBB5]" href="{% url 'app_pengguna:daftar_lokasi' %}">
+					<div class="flex justify-center">					
+						<img src="{% static '/images/list-locker-icon.png' %}"  alt="" class=" h-8 w-8">
+					</div>
+					<p class="mt-2 text-xs text-center">Daftar Loker</p>
+				</a>
+				<a class="hover:no-underline hover:text-[#6CCBB5]" href="{% url 'app_pengguna:pinjam_loker' %}">
+					<div class="flex justify-center">
+						<img src="{% static '/images/key-icon.png' %}"  alt="" class=" h-8 w-auto">
+					</div>
+					<p class="mt-2 text-xs text-center">Pinjam Loker</p>
+				</a>
+				<a class="hover:no-underline hover:text-[#6CCBB5]" href="{% url 'app_pengguna:kembalikan_loker' %}">
+					<div class="flex justify-center">
+						<img src="{% static '/images/kembali-icon.png' %}"  alt="" class=" h-8 w-auto">
+					</div>
+					<p class="mt-2 text-xs text-center">Kembali Pinjaman</p>
+				</a>
+			</div>
+
+			<div class="mt-4">
+				<p>Pinjaman Aktif</p>
+				<div class="mt-3">
+					{% for pinjaman in pinjaman_aktif%}
+					<div class="border hover:border-[#5DCFB5] flex justify-between p-3 rounded-xl items-center">
+						<div class="flex flex-col gap-2 text-sm">
+							<p>{{pinjaman.loker.grup_loker.nama_loker}}</p>
+							<p>{{pinjaman.mulaipinjam}}</p>
+						</div>
+						<a href="{% url 'app_pengguna:kembalikan_loker'%}" class="">
+							<p class="text-sm bg-[#5DCFB5] p-2 px-4 rounded-full" >Ambil</p>
+						</a>
+					</div>
+					{%endfor%}
+				</div>
 			</div>
 		</div>
 	</div>

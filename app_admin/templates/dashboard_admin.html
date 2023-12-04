@@ -5,43 +5,148 @@
 {% endblock meta %}
 
 {% block content %}
-<div class="content-container d-flex align-items-center justify-content-center mx-auto ">
-	<div class="container rounded mt-2 mb-2">
-		<div class="row align-items-center">
-			<div class="col-md-3 align-items-center">
-				<div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5 border border-secondary mb-2" width="150px" alt="default profile picture" src="https://static.vecteezy.com/system/resources/thumbnails/002/534/006/small/social-media-chatting-online-blank-profile-picture-head-and-body-icon-people-standing-icon-grey-background-free-vector.jpg">
-					<span class="font-weight-bold" id="full-name"></span>
-					<span class="text-black-50" id="username1"></span>
-					<span class="fw-light" id="contributor"></span>
+
+<div class="h-min-screen w-screen bg-white">
+	<div class="bg-white p-3 px-5 flex justify-between border-b-2 border-[#D9D9D9] w-full">
+		<img src="{% static '/images/admin-logo.png' %}"  alt="" class=" h-10 w-auto">
+		<div class="flex gap-3 items-center  overflow-x-auto">
+			<p class="text-[#3F5F8B]">{{username}}</p>
+			<img src="{% static '/images/person.png' %}"  alt="" class=" h-8 w-auto">
+		</div>
+	</div>
+
+	<div class="lg:grid lg:grid-cols-12 h-screen w-screen">
+		<div class="lg:col-span-2 flex flex-col gap-2 bg-white w-screen lg:w-full lg:border-r-2 border-[#D9D9D9] p-4 
+
+		">
+			<div class="md:flex md:flex-row lg:flex-col w-full justify-between">
+				<a href="{% url 'app_admin:add_notification' %}">
+					<div class="bg-[#3F5F8B] flex gap-4 p-3 rounded-xl items-center">
+						<img src="{% static '/images/add-icon.png' %}"  alt="" class=" h-8 w-auto">
+						<p class="text-white">Tambah Notifikasi</p>
+					</div>
+				</a>
+				<a href="{% url 'app_admin:manage' %}">
+					<div class=" flex gap-4 p-3 items-center">
+						<img src="{% static '/images/settings.png' %}"  alt="" class=" h-7 w-auto">
+						<p class="text-[#3F5F8B]">Manage Entity</p>
+					</div>
+				</a>
+				<a href="https://web.whatsapp.com/" >
+					<div class=" flex gap-4 p-3 items-center">
+						<img src="{% static '/images/whatssapp.png' %}"  alt="" class=" h-7 w-auto">
+						<p class="text-[#3F5F8B]">Open Whatsapp</p>
+					</div>
+				</a>
+				<a href="{% url 'logout' %}" >
+					<div class=" flex gap-4 p-3 items-center">
+						<img src="{% static '/images/logout.png' %}"  alt="" class=" h-7 w-auto">
+						<p class="text-[#801336] ">Log Out</p>
+					</div>
+				</a>
+			</div>
+
+			<div class="border-t-2">
+				<p class="text-center mt-5 font-bold text-[#3F5F8B]">Manage System</p>
+				<div class="flex flex-col md:flex-row lg:flex-col">
+					<a href="/admin_django/authentication/usermanage/" >
+						<div class=" flex gap-4 p-3 items-center">
+							<img src="{% static '/images/group-pengguna.png' %}"  alt="" class=" h-7 w-auto">
+							<p class="text-[#3F5F8B]">Manage User</p>
+						</div>
+					</a>
+					<a href="/admin_django/authentication/pengguna/" >
+						<div class=" flex gap-4 p-3 items-center">
+							<img src="{% static '/images/group-pengguna.png' %}"  alt="" class=" h-7 w-auto">
+							<p class="text-[#3F5F8B]">Manage Pengguna</p>
+						</div>
+					</a>
+					<a href="/admin_django/authentication/admin/" >
+						<div class=" flex gap-4 p-3 items-center">
+							<img src="{% static '/images/group-pengguna.png' %}"  alt="" class=" h-7 w-auto">
+							<p class="text-[#3F5F8B]">Manage Admin</p>
+						</div>
+					</a>
+	
+					<a href="/admin_django/app_pengguna/gruploker/" >
+						<div class=" flex gap-4 p-3 items-center">
+							<img src="{% static '/images/group-loker.png' %}"  alt="" class=" h-7 w-auto">
+							<p class="text-[#3F5F8B]">Manage Grup Loker</p>
+						</div>
+					</a>
+					<a href="/admin_django/app_pengguna/loker/" >
+						<div class=" flex gap-4 p-3 items-center">
+							<img src="{% static '/images/loker.png' %}"  alt="" class=" h-7 w-auto">
+							<p class="text-[#3F5F8B]">Manage Loker</p>
+						</div>
+					</a>
+					<a href="/admin_django/app_pengguna/notifikasi/" >
+						<div class=" flex gap-4 p-3 items-center">
+							<img src="{% static '/images/notifikasi-dashboard-admin.png' %}"  alt="" class=" h-7 w-auto">
+							<p class="text-[#3F5F8B]">Manage Notifikasi</p>
+						</div>
+					</a>
 				</div>
 			</div>
-			<div class="col-md-9">
-				<div class="d-flex justify-content-between align-items-center">
-					<h3><strong>Dashboard</strong></h3>
+		</div>
+		<div class="col-span-10 p-10">
+			<div class="border-2 grid grid-cols-12">
+				<div class="col-span-12 md:col-span-6 lg:col-span-3 border-2 p-6 flex flex-col gap-2" >
+					<img src="{% static '/images/people.png' %}"  alt="" class=" h-16 w-16">
+					<p class="text-4xl font-bold">{{jumlah_user}}</p>
+					<p>User Aktif hingga saat ini</p>
 				</div>
-				<div class="row mt-2">
-					<div class="col-md-12">
-                        <label class="labels">Email</label>
-                        <input type="text" aria-labelledby="nama" class="form-control" placeholder="" value="{{ username }}" id="nama" disabled="true">
-                    </div>
+
+				<div class="col-span-12 md:col-span-6 lg:col-span-3 border-2 p-6 flex flex-col gap-2">
+					<img src="{% static '/images/terpinjam.png' %}"  alt="" class=" h-16 w-16">
+					<p class="text-4xl font-bold">{{loker_aktif}}</p>
+					<p>Loker yang sedang aktif digunakan</p>
 				</div>
-				<div class="row mt-2">
-					<div class="col-md-12">
-                        <label class="labels">Role</label>
-                        <input type="text" aria-labelledby="status" class="form-control" placeholder="" value="Admin" id="status-edit" disabled="true">
-                    </div>
+
+				<div class="col-span-12 md:col-span-6 lg:col-span-3 border-2 p-6 flex flex-col gap-2">
+					<img src="{% static '/images/chart.png' %}"  alt="" class=" h-16 w-16">
+					<p class="text-4xl font-bold">{{jumlah_transaksi}}</p>
+					<p>Jumlah yang telah terpinjam hingga saat ini</p>
 				</div>
-				<div class="btn-toolbar mt-3 mx-3" role="toolbar" aria-label="Toolbar with button groups">
-					<div class="btn-group me-2" role="group" aria-label="First group">
-						<a href="{% url 'app_admin:manage' %}" class="btn btn-primary btn-block">Manage Entity</a>
-					</div>
-					<div class="btn-group me-2" role="group" aria-label="First group">
-						<a href="{% url 'app_admin:add_notification' %}" class="btn btn-primary btn-block">Add Notification</a>
-					</div>
-					<div class="btn-group me-2" role="group" aria-label="First group">
-						<a href="https://web.whatsapp.com/" target="_blank" class="btn btn-success btn-block">Open Whatsapp</a>
-					</div>
+
+				<div class="col-span-12 md:col-span-6 lg:col-span-3  border-2 p-6 flex flex-col gap-2">
+					<img src="{% static '/images/loacker.png' %}"  alt="" class=" h-16 w-16">
+					<p class="text-4xl font-bold">{{jumlah_grup_loker_aktif}}</p>
+					<p>Group Loker sedang Aktif dipinjam</p>
 				</div>
+			</div>
+
+			<p class="text-xl mt-10 ">
+				Semua Transaksi Peminjaman
+			</p>
+			<div class="w-full overflow-x-auto">
+				<table class="table-auto border-collapse mt-5 w-full">
+					<thead>
+					  <tr>
+						<th class="p-2 bg-[#D9D9D9] rounded-tl-3xl">Email Pengguna</th>
+						<th class="p-2  bg-[#D9D9D9]">Nama Grup Loker</th>
+						<th class="p-2  bg-[#D9D9D9]">Status</th>
+						<th class="p-2  bg-[#D9D9D9]">Durasi</th>
+						<th class="p-2  bg-[#D9D9D9] rounded-tr-3xl">Total Harga</th>
+					  </tr>
+					</thead>
+					<tbody>
+						{% for transaksi in transaksi %}
+							<tr class="border-b-2">
+								<td class="p-2">{{transaksi.pengguna.user}}</td>
+								<td class="p-2">{{transaksi.loker.grup_loker.nama_loker}}</td>
+								{% if transaksi.status == 'FINISHED'%}
+									<td class="p-2 text-center "><p class="bg-[#32F18A] rounded-xl">Finish</p></td>
+								{% else %}
+									<td class="p-2 text-center "><p class="bg-[#F1BC32] rounded-xl">On Going</p></td>
+								{% endif %}
+								<td class="p-2 text-center">{{transaksi.mulaipinjam}} - {{transaksi.akhirpinjam}}</td>
+								<td class="p-2 text-center">Rp{{transaksi.total_harga}}</td>
+							</tr>
+						  {% endfor %}
+	
+					</tbody>
+				  </table>
 			</div>
 		</div>
 	</div>

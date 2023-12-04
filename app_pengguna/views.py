@@ -1,5 +1,6 @@
 import datetime
 import time
+import json
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from app_pengguna.models import *
@@ -7,14 +8,28 @@ import qrcode
 from io import BytesIO
 import uuid
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
+import os
 from project_django import settings
 from utility.util import *
+import midtransclient
+from django.http import HttpResponse, HttpResponseNotFound
+from django.core import serializers
+from project_django.settings import PAYMENT_CLIENT_KEY, PAYMENT_SERVER_KEY
+import base64
+from django.http import JsonResponse
 
 @login_required
 def dashboard_pengguna(request):
     context = dict()
     username = request.user.username
     context['username'] = username
+    User = UserManage.objects.get(username = username)
+    if 'from_pinjam_loker' in request.session:
+        del request.session['from_pinjam_loker']
+    pengguna = Pengguna.objects.get(user=User)
+    context['saldo_user'] = pengguna.saldo
+    context['pinjaman_aktif'] = TransaksiPeminjaman.objects.filter(pengguna = pengguna, status="ONGOING")
     return render(request, 'dashboard_pengguna.html', context=context)
 
 @login_required
@@ -92,15 +107,24 @@ def open_loker(request, loker_id):
         transaksi_peminjaman = TransaksiPeminjaman.objects.create(uuid_code=uuid_open_loker, pengguna=pengguna_obj, loker=loker, mulaipinjam=timezone.now(), total_harga=0.0, status="ONGOING")
 
         img = qrcode.make(f"O_{uuid_open_loker}")
-        img_name = f"O_{uuid_open_loker}.png"
-        img.save(settings.MEDIA_ROOT + '\\' + img_name)
+        img_byte_array = BytesIO()
+        img.save(img_byte_array)
+        img_byte_array = img_byte_array.getvalue()
+        img_base64 = base64.b64encode(img_byte_array).decode('utf-8')
 
         context['loker'] = loker
-        context['img_name'] = img_name
+        context['img_base64'] = img_base64
     else:
         transaksi_peminjaman = existing_transaksi_peminjaman[0]
         context['loker'] = transaksi_peminjaman.loker
-        context['img_name'] = f"O_{transaksi_peminjaman.uuid_code}.png"
+
+        img = qrcode.make(f"O_{transaksi_peminjaman.uuid_code}")
+        img_byte_array = BytesIO()
+        img.save(img_byte_array)
+        img_byte_array = img_byte_array.getvalue()
+        img_base64 = base64.b64encode(img_byte_array).decode('utf-8')
+
+        context['img_base64'] = img_base64
     print(transaksi_peminjaman.uuid_code)
     
     if 'from_pinjam_loker' in request.session:
@@ -137,17 +161,14 @@ def close_loker(request, transaksi_id):
     loker.status_loker = False # false is not used
     loker.save()
 
-    img_name = f"C_{transaksi_peminjaman.uuid_code}.png"
-    if os.path.exists(settings.MEDIA_ROOT + '\\' + img_name):
-        context['transaksi'] = transaksi_peminjaman
-        context['img_name'] = f"C_{transaksi_peminjaman.uuid_code}.png"
-        return render(request, 'close_loker.html', context=context)
-
     img = qrcode.make(f"C_{transaksi_peminjaman.uuid_code}")
-    img.save(settings.MEDIA_ROOT + '\\' + img_name)
+    img_byte_array = BytesIO()
+    img.save(img_byte_array)
+    img_byte_array = img_byte_array.getvalue()
+    img_base64 = base64.b64encode(img_byte_array).decode('utf-8')
 
     context['transaksi'] = transaksi_peminjaman
-    context['img_name'] = img_name
+    context['img_base64'] = img_base64
 
     return render(request, 'close_loker.html', context=context)
 
@@ -208,3 +229,137 @@ def history_transaksi(request):
         rendered_transaksi.append((transaksi, is_done_feedback))
     context['all_transaksi'] = rendered_transaksi
     return render(request, 'history_transaksi.html', context=context)
+  
+def topup(request):
+    context = dict()
+
+    if(request.method == "POST"):
+        pengguna_obj = get_object_or_404(Pengguna, user=request.user)
+        nominal = request.POST['nominal']
+        paymentMethod = request.POST['paymentMethod']
+        topupObj = TopupHistory.objects.create(pengguna=pengguna_obj, status='Pending', tanggal=datetime.datetime.now(),time=time.strftime("%H:%M", time.localtime()),  nominal=nominal, metode_pembayaran=paymentMethod)
+
+        paymentMethod = paymentMethod.lower()
+
+        try:            
+            # Create Core API instance
+            core_api = midtransclient.CoreApi(
+                is_production=False,
+                server_key=PAYMENT_SERVER_KEY,
+                client_key=PAYMENT_CLIENT_KEY
+            )
+            # Build API parameter
+            param = {
+                "payment_type": paymentMethod,
+                "transaction_details": {
+                    "gross_amount": nominal,
+                    "order_id": str(topupObj.order_id) ,
+                },
+                "gopay": {
+                }
+            }
+            # charge transaction
+            charge_response = core_api.charge(param)
+            # charge_response = json.loads(str(charge_response))
+            actions = charge_response["actions"]
+
+            topupObj.img_payment = actions[0]["url"]
+            topupObj.directlink_url = actions[1]["url"]
+            topupObj.save()
+            # redirect url
+            return redirect('app_pengguna:detail_transaction_topup', order_id=str(topupObj.order_id))
+
+        except:
+            TopupHistory.delete(topupObj)
+            return redirect('app_pengguna:topup')
+
+    return render(request, 'topup.html', context=context)
+
+@login_required
+def history_topup(request):
+    context = dict()
+    user = get_object_or_404(Pengguna, user=request.user)
+    topupList = TopupHistory.objects.filter(pengguna = user)
+    print(topupList)
+    if(len(topupList) == 0):
+        context['status'] = False
+    else:
+        context['status'] = True
+
+    context['data'] = topupList
+    return render(request, 'history_topup.html' , context=context)
+
+@login_required
+def detail_transaction_topup(request, order_id):
+    context = dict()
+    user = get_object_or_404(Pengguna, user=request.user)
+
+    try:
+        topupDetail = TopupHistory.objects.get(pengguna=user,order_id=uuid.UUID(order_id))
+    except:
+        return render(request, '404.html' , context=context)
+
+    if topupDetail is not None:
+        if str(topupDetail.status) == "Sukses":
+            active = False
+        else:
+            active = True
+            
+        context = {
+            "order_id": str(topupDetail.order_id)[:13],
+            "status": str(topupDetail.status),
+            "tanggal": topupDetail.tanggal.strftime("%d %B %Y"),
+            "time": str(topupDetail.time)[0:5],
+            "nominal": topupDetail.nominal,
+            "metodePembayaran": topupDetail.metode_pembayaran,
+            'active': active,
+            "url":{
+                "direct_link":topupDetail.directlink_url,
+                "img_link":topupDetail.img_payment
+            }
+        }
+        return render(request, 'detail_topup.html' , context=context)
+    else:
+        return render(request, '404.html' , context=context)
+    
+@csrf_exempt 
+def receive_notification(request):
+    if(request.method == "POST"):
+        data = request.body
+        data = data.decode('utf-8')
+        data_dict = json.loads(data)
+
+        order_id = data_dict['order_id']
+        transaction_status = data_dict['transaction_status']
+        fraud_status = data_dict['fraud_status']
+        
+        try:
+            topup_obj = TopupHistory.objects.get(order_id = uuid.UUID(order_id))
+            users_obj = topup_obj.pengguna
+            if transaction_status == 'capture' or transaction_status == 'settlement':
+                if fraud_status == 'challenge':
+                    topup_obj.status =  fraud_status
+                elif fraud_status == 'accept':
+                    topup_obj.status = 'Sukses'
+                users_obj.saldo = users_obj.saldo + topup_obj.nominal
+                users_obj.save()
+            elif transaction_status == 'cancel' or transaction_status == 'deny' or transaction_status == 'expire':
+                topup_obj.status =  'Gagal'
+
+            elif transaction_status == 'pending':
+                topup_obj.status =  'Pending'
+
+            topup_obj.save()
+            return JsonResponse({
+                'success':True,
+
+            }, status = 200)
+        except:
+            return  JsonResponse({
+                'success':True,
+                'message': "Data tidak ditemukan"
+            }, status = 200)
+    return JsonResponse({
+                'success':True,
+                'message': "Data tidak ditemukan"
+            }, status = 400)

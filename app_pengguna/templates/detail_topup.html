@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="grid justify-items-stretch w-screen min-h-screen">
+	<div class="row-auto justify-self-center relative min-w-[429px] max-w-[429px] min-h-screen overflow-hidden drop-shadow-md bg-[#F8F8F8]">
+        <div class="bg-[#00B3E1] p-3 flex justify-center rounded-b-3xl">
+            <img src="{% static '/images/gopay-icon.png' %}"  alt="" class=" h-8 w-auto">        
+        </div>
+
+        <div class="p-5">
+            <div class="bg-white p-3 rounded-2xl flex flex-col gap-2">
+                <span class="flex justify-between text-[#ABABAB]">
+                    <p class="">Metode Pembayaran</p>
+                    <p>{{metodePembayaran}}</p>
+                </span>
+                <span class="flex justify-between text-[#ABABAB]">
+                    <p>Status</p>
+                    <p>{{status}}</p>
+                </span>
+                <span class="flex justify-between text-[#ABABAB]">
+                    <p>Waktu</p>
+                    <p>{{time}}</p>
+                </span>
+                <span class="flex justify-between text-[#ABABAB]">
+                    <p>Tangggal</p>
+                    <p>{{tanggal}}</p>
+                </span>
+                <span class="flex justify-between text-[#ABABAB]">
+                    <p>ID Transaksi</p>
+                    <p>{{order_id}}</p>
+                </span>
+                <span class="flex justify-between">
+                    <p>Total</p>
+                    <p>Rp{{nominal}}</p>
+                </span>
+            </div>
+            {% if active == True %}
+            <div class="p-3 py-4 bg-white rounded-2xl text-center">
+                <p>Scan To Pay With Gopay</p>
+                <img src="{{url.img_link}}">
+                <p>or</p>
+                <a href="{{url.direct_link}}"><p class="p-2 w-full rounded-full mt-2 bg-[#5DCFB5] hover:bg-[#8AD8B0]">Direct Link Payment</p></a>
+            </div>
+            {% endif %}
+
+        </div>
+        <div class="px-5">       
+             <a href="{% url 'app_pengguna:dashboard_pengguna' %}"><p class=" bg-[#4A4949] hover:bg-black w-full text-center text-white p-2 rounded-full hover:no-underline">Back To Dashboard</p></a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

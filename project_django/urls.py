@@ -20,6 +20,7 @@ from .views import *
 from django.conf import settings
 from django.urls import path, include
 from django.conf.urls.static import static
+from app_pengguna.views import receive_notification
 
 urlpatterns = [
     path('admin_django/', admin.site.urls),
@@ -30,6 +31,7 @@ urlpatterns = [
     path('api/from-machine/', api_from_machine, name='api_from_machine'),
     path('api/get-all-transaksi/', api_get_all_transaksi, name='api_get_all_transaksi'),
     path('api/post-transaksi/', api_post_transaksi, name='api_post_transaksi'),
+    path('api/notif-topup', receive_notification, name='receive_notification'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
