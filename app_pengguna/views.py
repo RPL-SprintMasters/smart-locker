@@ -114,6 +114,10 @@ def open_loker(request, loker_id):
     else:
         transaksi_peminjaman = existing_transaksi_peminjaman[0]
         context['loker'] = transaksi_peminjaman.loker
+        if not os.path.exists(settings.MEDIA_ROOT + '\\' + f"O_{transaksi_peminjaman.uuid_code}.png"):
+            img = qrcode.make(f"O_{transaksi_peminjaman.uuid_code}")
+            img_name = f"O_{transaksi_peminjaman.uuid_code}.png"
+            img.save(settings.MEDIA_ROOT + '\\' + img_name)
         context['img_name'] = f"O_{transaksi_peminjaman.uuid_code}.png"
     print(transaksi_peminjaman.uuid_code)
     

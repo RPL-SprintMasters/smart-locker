@@ -9,7 +9,7 @@ durasi_sec = DURASI * 60
 stored_sended = dict()
 
 while True:
-    resp = requests.post('https://dev-sprintmasters.up.railway.app/api/get-all-transaksi/')
+    resp = requests.post('https://sprintmasters.up.railway.app/api/get-all-transaksi/')
     data = resp.json()
     # pprint(data)
 
@@ -29,7 +29,7 @@ while True:
         diff_durasi = value['selisih']//durasi_sec
         if (stored_sended[key] < diff_durasi):
             stored_sended[key] = diff_durasi
-            resp = requests.post('https://dev-sprintmasters.up.railway.app/api/post-transaksi/', json={
+            resp = requests.post('https://sprintmasters.up.railway.app/api/post-transaksi/', json={
                 "uuid_code": key,
                 "durasi": f"{DURASI} menit"
             })
