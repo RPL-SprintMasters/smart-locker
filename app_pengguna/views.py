@@ -17,6 +17,7 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.core import serializers
 from project_django.settings import PAYMENT_CLIENT_KEY, PAYMENT_SERVER_KEY
 import base64
+from django.http import JsonResponse
 
 @login_required
 def dashboard_pengguna(request):
@@ -194,6 +195,7 @@ def hubungi_admin(request):
     whatsapp_link = f'https://api.whatsapp.com/send?phone={user_admin.telephone_number}&text=Halo admin saya {request.user.username} saya terdapat permasalah <KASUS>\n\nBerikut merupakan rinciannya:\n\n<RINCIAN-PERMASALAHAN>'
     return redirect(whatsapp_link)
 
+@login_required
 def topup(request):
     context = dict()
 
@@ -314,7 +316,16 @@ def receive_notification(request):
                 topup_obj.status =  'Pending'
 
             topup_obj.save()
-            return   HttpResponse({'message': 'Sukses'}, content_type='text/plain')
+            return JsonResponse({
+                'success':True,
+
+            }, status = 200)
         except:
-            return   HttpResponse({'message': 'Data tidak ditemukan'}, content_type='text/plain')
-    return   HttpResponse({'message': 'Data tidak ditemukan'}, content_type='text/plain')
+            return  JsonResponse({
+                'success':True,
+                'message': "Data tidak ditemukan"
+            }, status = 200)
+    return JsonResponse({
+                'success':True,
+                'message': "Data tidak ditemukan"
+            }, status = 400)
