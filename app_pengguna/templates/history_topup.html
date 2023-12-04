@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="grid justify-items-stretch w-screen min-h-screen">
+	<div class="row-auto justify-self-center relative min-w-[429px] max-w-[429px] min-h-screen overflow-hidden drop-shadow-md bg-white p-4">
+        <div class="flex gap-2">
+            <a href="{% url 'app_pengguna:dashboard_pengguna' %}">
+                <img src="{% static '/images/back-icon.png' %}"  alt="" class=" h-6 w-auto">
+            </a>
+            <p>History Topup</p>
+        </div>
+        <div class="flex flex-col gap-4 mt-4">
+            {% if status == True%}
+                {% for data in data %}
+                    <a href="/pengguna/detail/{{data.order_id}}" class="hover:no-underline hover:text-black">
+                        <div class="drop-shadow-md bg-white p-3 rounded-xl flex items-center justify-between ">
+                            <div>
+                                    <p>{{data.tanggal}}</p>
+                                    {% if data.status == 'Sukses'%}
+                                        <p class="p-1 bg-[#4EC33D] rounded-full text-center text-sm">{{data.status}}</p>
+                                    {% elif data.status == 'Pending'%}
+                                        <p class="p-1 bg-[#F88F01] rounded-full text-center text-sm">{{data.status}}</p>
+                                    {%else%}
+                                        <p class="p-1 bg-[#FC2E20] rounded-full text-center text-sm">{{data.status}}</p>
+                                    {%endif%}
+                            </div>
+                            <div>
+                                {% if data.status == 'Sukses'%}
+                                        <p class="text-[#4EC33D]">+{{data.nominal}}</p>
+                                    {%else%}
+                                        <p class="">{{data.nominal}}</p>
+                                    {%endif%}
+                            </div>
+                        </div>
+                    </a>
+                {%endfor%}
+            {%else%}
+            <p class="text-center text-gray-400">Anda tidak memiliki history top up</p>
+            {%endif%}
+
+        </div>
+    </div>
+</div>
+{% endblock content %}

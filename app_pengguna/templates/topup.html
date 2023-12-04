@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 <div class="grid justify-items-stretch w-screen min-h-screen">
 	<div class="row-auto justify-self-center relative min-w-[429px] max-w-[429px] min-h-screen overflow-hidden drop-shadow-md bg-white p-5">
         <div class="flex gap-2">
+            <a href="{% url 'app_pengguna:dashboard_pengguna' %}">
+                <img src="{% static '/images/back-icon.png' %}"  alt="" class=" h-6 w-auto">
+            </a>
             <p>Isi Saldo</p>
         </div>
 

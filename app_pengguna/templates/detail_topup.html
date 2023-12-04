@@ -39,10 +39,13 @@
                 <p>Scan To Pay With Gopay</p>
                 <img src="{{url.img_link}}">
                 <p>or</p>
-                <button class="p-2 w-full rounded-full mt-2 bg-[#5DCFB5] hover:bg-[#8AD8B0]"  href="{{url.direct_link}}">Direct Link Payment</button>
+                <a href="{{url.direct_link}}"><p class="p-2 w-full rounded-full mt-2 bg-[#5DCFB5] hover:bg-[#8AD8B0]">Direct Link Payment</p></a>
             </div>
             {% endif %}
 
+        </div>
+        <div class="px-5">       
+             <a href="{% url 'app_pengguna:dashboard_pengguna' %}"><p class=" bg-[#4A4949] hover:bg-black w-full text-center text-white p-2 rounded-full hover:no-underline">Back To Dashboard</p></a>
         </div>
     </div>
 </div>
