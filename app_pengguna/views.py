@@ -16,7 +16,7 @@ import midtransclient
 from django.http import HttpResponse, HttpResponseNotFound
 from django.core import serializers
 from project_django.settings import PAYMENT_CLIENT_KEY, PAYMENT_SERVER_KEY
-
+import base64
 
 @login_required
 def dashboard_pengguna(request):
@@ -106,19 +106,24 @@ def open_loker(request, loker_id):
         transaksi_peminjaman = TransaksiPeminjaman.objects.create(uuid_code=uuid_open_loker, pengguna=pengguna_obj, loker=loker, mulaipinjam=timezone.now(), total_harga=0.0, status="ONGOING")
 
         img = qrcode.make(f"O_{uuid_open_loker}")
-        img_name = f"O_{uuid_open_loker}.png"
-        img.save(settings.MEDIA_ROOT + '\\' + img_name)
+        img_byte_array = BytesIO()
+        img.save(img_byte_array)
+        img_byte_array = img_byte_array.getvalue()
+        img_base64 = base64.b64encode(img_byte_array).decode('utf-8')
 
         context['loker'] = loker
-        context['img_name'] = img_name
+        context['img_base64'] = img_base64
     else:
         transaksi_peminjaman = existing_transaksi_peminjaman[0]
         context['loker'] = transaksi_peminjaman.loker
-        if not os.path.exists(settings.MEDIA_ROOT + '\\' + f"O_{transaksi_peminjaman.uuid_code}.png"):
-            img = qrcode.make(f"O_{transaksi_peminjaman.uuid_code}")
-            img_name = f"O_{transaksi_peminjaman.uuid_code}.png"
-            img.save(settings.MEDIA_ROOT + '\\' + img_name)
-        context['img_name'] = f"O_{transaksi_peminjaman.uuid_code}.png"
+
+        img = qrcode.make(f"O_{transaksi_peminjaman.uuid_code}")
+        img_byte_array = BytesIO()
+        img.save(img_byte_array)
+        img_byte_array = img_byte_array.getvalue()
+        img_base64 = base64.b64encode(img_byte_array).decode('utf-8')
+
+        context['img_base64'] = img_base64
     print(transaksi_peminjaman.uuid_code)
     
     if 'from_pinjam_loker' in request.session:
@@ -159,17 +164,14 @@ def close_loker(request, transaksi_id):
     loker.status_loker = False # false is not used
     loker.save()
 
-    img_name = f"C_{transaksi_peminjaman.uuid_code}.png"
-    if os.path.exists(settings.MEDIA_ROOT + '\\' + img_name):
-        context['transaksi'] = transaksi_peminjaman
-        context['img_name'] = f"C_{transaksi_peminjaman.uuid_code}.png"
-        return render(request, 'close_loker.html', context=context)
-
     img = qrcode.make(f"C_{transaksi_peminjaman.uuid_code}")
-    img.save(settings.MEDIA_ROOT + '\\' + img_name)
+    img_byte_array = BytesIO()
+    img.save(img_byte_array)
+    img_byte_array = img_byte_array.getvalue()
+    img_base64 = base64.b64encode(img_byte_array).decode('utf-8')
 
     context['transaksi'] = transaksi_peminjaman
-    context['img_name'] = img_name
+    context['img_base64'] = img_base64
 
     return render(request, 'close_loker.html', context=context)
 

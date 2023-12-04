@@ -17,9 +17,9 @@
                         </div>
                         <a href="{% url 'app_pengguna:dashboard_pengguna' %}" class="btn btn-info">Kembali ke Dashboard</a>
                     {% endif %}
-                    {% if img_name %}
+                    {% if img_base64 %}
                         <div class="qr-img">
-                            <img src="/media/{{ img_name }}" alt="qr code" style="width: 100%;">
+                            <img src="data:image/png;base64,{{img_base64}}" alt="qr code" style="width: 100%;">
                         </div>
                         <a href="{% url 'app_pengguna:close_loker' transaksi.id %}" class="btn btn-info">Perbarui tampilan setelah Scan</a>
                     {% endif %}
