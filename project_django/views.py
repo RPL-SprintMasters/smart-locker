@@ -54,13 +54,13 @@ def api_from_machine(request):
         data = json.loads(request.body)
         code_raw = data['code_loker']
         command = str(code_raw).split("_")[0]
-        uuid_code = uuid.UUID(str(code_raw).split("_")[-1])
         try:
+            uuid_code = uuid.UUID(str(code_raw).split("_")[-1])
             transaksi = TransaksiPeminjaman.objects.filter(uuid_code=uuid_code)[0]
         except:
             resp = {
                 'success':False,
-                'message':f'Tidak ditemukan transaksi dengan ID {uuid_code}',
+                'message':f'Tidak ditemukan transaksi dengan ID {str(code_raw).split("_")[1]}',
             }
             return JsonResponse(resp, status = 400)
         if command == 'O':
@@ -71,12 +71,14 @@ def api_from_machine(request):
                 resp = {
                     'success':True,
                     'message':f'Sukses memulai peminjaman pada loker nomor {transaksi.loker.nomor_loker}',
+                    'no_loker':transaksi.loker.nomor_loker
                 }
                 return JsonResponse(resp, status = 200)
             else:
                 resp = {
                     'success':False,
                     'message':f'Sudah pernah di scan transaksi peminjaman dengan ID {uuid_code}',
+                    'no_loker':transaksi.loker.nomor_loker
                 }
                 return JsonResponse(resp, status = 400)
         elif command == 'C':
@@ -87,42 +89,52 @@ def api_from_machine(request):
                 selisih_waktu = transaksi.akhirpinjam - transaksi.mulaipinjam
                 selisih_15min = math.ceil(selisih_waktu.total_seconds() / 900)
                 transaksi.total_harga = transaksi.loker.grup_loker.harga_loker * selisih_15min
-                transaksi.save()
 
                 pengguna_obj = get_object_or_404(Pengguna, user=transaksi.pengguna.user) # mendapatkan object pengguna
                 loker = get_object_or_404(Loker, id=transaksi.loker.id)   # user.getLokerFromId(loker_id)
 
                 if str(transaksi.pengguna.user.username).endswith("@ui.ac.id"):
                     today = datetime.date.today()
-                    transaksi_peminjaman_hari_ini = TransaksiPeminjaman.objects.filter(
-                        pengguna=pengguna_obj,
-                        loker=loker,
-                        status="FINISHED",
-                        mulaipinjam__date=today,
-                        akhirpinjam__date=today
-                    ).order_by('mulaipinjam')
-                    new_saldo = sum([transaksi.total_harga for transaksi in transaksi_peminjaman_hari_ini])
-                    curr_15m = 0
-                    for i, transaksi in enumerate(transaksi_peminjaman_hari_ini):
-                        curr_15m += (transaksi.total_harga//transaksi.loker.grup_loker.harga_loker)
-                        if (curr_15m >= 8):
-                            lebih = curr_15m - 8
-                            new_saldo -= transaksi.loker.grup_loker.harga_loker*lebih
-                            break
-                        new_saldo -= transaksi.total_harga
-                    pengguna_obj.saldo = new_saldo # pengguna_obj.setSaldo(new_saldo)
+                    if (pengguna_obj.current_free != today):
+                        pengguna_obj.free_peminjaman = 8
+                        pengguna_obj.current_free = today
+                    if (pengguna_obj.current_free==today):
+                        gap = pengguna_obj.free_peminjaman - selisih_15min
+                        real_gap = 0
+                        if (gap < 0 and pengguna_obj.free_peminjaman >= 0):
+                            real_gap = abs(gap)
+                        elif (gap < 0 and pengguna_obj.free_peminjaman < 0):
+                            real_gap = abs(selisih_15min)
+                        if ((pengguna_obj.saldo - (transaksi.loker.grup_loker.harga_loker * real_gap)) < 0):
+                            resp = {
+                                'success':False,
+                                'message':f'Saldo anda tidak mencukupi silakan kembali ke dashboard untuk topup',
+                                'no_loker':None
+                            }
+                            return JsonResponse(resp, status = 400)
+                        pengguna_obj.saldo -= transaksi.loker.grup_loker.harga_loker * (real_gap) # pengguna_obj.reduceBalance(transaksi.getLoker().getGrupLoker().getHargaLoker()*real_gap)
                 else:
+                    if ((pengguna_obj.saldo - transaksi.total_harga) < 0):
+                        resp = {
+                            'success':False,
+                            'message':f'Saldo anda tidak mencukupi silakan kembali ke dashboard untuk topup',
+                            'no_loker':None
+                        }
+                        return JsonResponse(resp, status = 400)
                     pengguna_obj.saldo -= transaksi.total_harga # pengguna_obj.reduceBalance(transaksi_peminjaman.getTotalHarga())
                 pengguna_obj.save()
+                transaksi.save()
                 resp = {
                     'success':True,
                     'message':f'Sukses menyelesaikan peminjaman pada loker nomor {transaksi.loker.nomor_loker}',
+                    'no_loker':transaksi.loker.nomor_loker
                 }
                 return JsonResponse(resp, status = 200)
             else:
                 resp = {
                     'success':False,
                     'message':f'Sudah pernah di scan transaksi pengembalian dengan ID {uuid_code}',
+                    'no_loker':transaksi.loker.nomor_loker
                 }
                 return JsonResponse(resp, status = 400)
 
