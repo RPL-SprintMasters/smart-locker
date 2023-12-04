@@ -14,6 +14,8 @@ class Admin(models.Model):
 class Pengguna(models.Model):
     user = models.OneToOneField(UserManage, on_delete=models.CASCADE)
     saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    free_peminjaman = models.IntegerField(default=8)
+    current_free = models.DateField(auto_now=True)
 
 class OTPtoUser(models.Model):
     kode_otp = models.CharField(max_length=15)
