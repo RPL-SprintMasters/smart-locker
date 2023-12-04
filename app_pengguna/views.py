@@ -139,10 +139,6 @@ def kembalikan_loker(request):
     
     pengguna_obj = get_object_or_404(Pengguna, user=request.user)
     transaksi_peminjaman_all = TransaksiPeminjaman.objects.filter(pengguna=pengguna_obj, total_harga=0.0, status="ONGOING")
-    for t in transaksi_peminjaman_all:
-        print("###")
-        print(t.id)
-        print(t.uuid_code)
     context['transaksi_peminjaman_all'] = transaksi_peminjaman_all
 
     return render(request, 'kembalikan_loker.html', context=context)
@@ -196,6 +192,44 @@ def hubungi_admin(request):
     return redirect(whatsapp_link)
 
 @login_required
+def feedback(request, transaksi_id):
+    context = dict()
+    if request.method == 'POST':
+        transaksi = get_object_or_404(TransaksiPeminjaman, id=transaksi_id)
+
+        rating = request.POST.get('rating')
+        message_feedback = request.POST.get('message_feedback')
+
+        feedback_instance = Feedback(transaksi=transaksi, rating=rating, message=message_feedback)
+        feedback_instance.save()
+        context['status'] = 'success'
+        context['message'] = 'Your service form has been successfully submitted.'
+        return render(request, 'feedback.html', context=context)
+    try:
+        Feedback.objects.filter(transaksi=get_object_or_404(TransaksiPeminjaman, id=transaksi_id))[0]
+        context['status'] = 'success'
+        context['message'] = 'Anda sudah pernah mengirimkan feeedback'
+        return render(request, 'feedback.html', context=context)
+    except:
+        return render(request, 'feedback.html', context=context)
+
+@login_required
+def history_transaksi(request):
+    context = dict()
+    all_transaksi = TransaksiPeminjaman.objects.filter(pengguna=Pengguna.objects.filter(user=request.user)[0])
+    rendered_transaksi = []
+    for transaksi in all_transaksi:
+        try:
+            Feedback.objects.filter(transaksi=transaksi)[0]
+            is_done_feedback = True
+        except:
+            is_done_feedback = False
+        transaksi.mulaipinjam = transaksi.mulaipinjam + datetime.timedelta(hours=7)
+        transaksi.akhirpinjam = transaksi.akhirpinjam + datetime.timedelta(hours=7)
+        rendered_transaksi.append((transaksi, is_done_feedback))
+    context['all_transaksi'] = rendered_transaksi
+    return render(request, 'history_transaksi.html', context=context)
+  
 def topup(request):
     context = dict()
 
