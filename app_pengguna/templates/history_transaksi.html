@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2 class="mt-2">History Transaksi</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Awal Peminjaman</th>
+                <th>Akhir Peminjaman</th>
+                <th>Grup Loker</th>
+                <th>Loker Nomor</th>
+                <th>Total Harga</th>
+                <th>Berikan Feedback</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaksi, is_done_feedback in all_transaksi %}
+                <tr id="data_table">
+                    <td>{{ transaksi.mulaipinjam }}</td>
+                    <td>{{ transaksi.akhirpinjam }}</td>
+                    <td>{{ transaksi.loker.grup_loker.nama_loker }}</td>
+                    <td>{{ transaksi.loker.nomor_loker }}</td>
+                    <td>{{ transaksi.total_harga }}</td>
+                    <td>
+                        {% if not is_done_feedback %}
+                            <a href="{% url 'app_pengguna:feedback' transaksi.id %}" class="btn btn-primary btn-block">Berikan Feedback</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

@@ -12,4 +12,6 @@ urlpatterns = [
     path('close-loker/<int:transaksi_id>/', close_loker, name='close_loker'),
     path('view-notification/', view_notification, name='view_notification'),
     path('hubungi-admin/', hubungi_admin, name='hubungi_admin'),
+    path('feedback/<int:transaksi_id>/', feedback, name='feedback'),
+    path('history-transaksi/', history_transaksi, name='history_transaksi'),
 ]

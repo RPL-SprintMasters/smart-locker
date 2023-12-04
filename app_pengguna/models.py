@@ -36,3 +36,8 @@ class Notifikasi(models.Model):
     waktu = models.DateTimeField(auto_now=True)
     judul = models.CharField(max_length=15)
     pesan = models.TextField()
+
+class Feedback(models.Model):
+    transaksi = models.OneToOneField(TransaksiPeminjaman, on_delete=models.CASCADE)
+    rating = models.IntegerField(default=0)
+    message = models.TextField()
