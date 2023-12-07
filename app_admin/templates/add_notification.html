@@ -1,11 +1,126 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block meta %}
-<title>Add Notification to Pengguna - Smart Loker</title>
+<title>Add Notification Pengguna</title>
 {% endblock meta %}
-
 {% block content %}
+<style>
+    .display {
+        animation: slideright 3000ms forwards ease-in-out;
+    }
+    @keyframes slideright {
+    0% {
+        transform: translateX(200px);
+        opacity: 0;
+    }
+
+    20% {
+        transform: translateX(0px);
+        opacity: 1;
+    }
+    80% {
+        transform: translateX(0px);
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(200px);
+    }
+    }
+
+</style>
+<div class="w-screen min-h-screen bg-white flex flex-col">
+    <div class="bg-white p-3 px-5 flex justify-between border-b-2 border-[#D9D9D9] w-full">
+		<img src="{% static '/images/admin-logo.png' %}"  alt="" class=" h-10 w-auto">
+		<div class="flex gap-3 items-center  overflow-x-auto">
+			<p class="text-[#3F5F8B]">{{username}}</p>
+			<img src="{% static '/images/person.png' %}"  alt="" class=" h-8 w-auto">
+		</div>
+	</div>
+    
+    <div class="grow bg-gray-100 flex justify-center p-4 lg:p-0 relative overflow-hidden">
+        {% if status == 'success' %}
+        <div class="absolute display top-1 right-0 z-10 p-2">
+            <div class="flex items-center gap-2 bg-[#CBE4D1] p-2 rounded-xl border border-[#4EC33D]">
+                <img src="{% static '/images/tick-circle.png' %}" class="h-10 w-10" alt="">
+                <div class="text-[#2E6A41]">
+                    <p class="font-bold">
+                        Success
+                    </p>
+                    <p>
+                        You have successfully send notification to customer
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="bg-white max-w-58 p-4 h-fit rounded-xl drop-shadow-sm mt-16 relative z-0">
+            <p class="font-medium text-xl">Create Notification</p>
+            <form method="post" 
+                enctype="multipart/form-data"
+                class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4 ">
+                {% csrf_token %}
+                <div class="flex flex-col gap-4 h-full">
+                    <div class="flex flex-col gap-1">
+                        <label for="title_notification" class="text-[#606060] font-medium">Judul </label>
+                        <input type="text" class="border rounded-xl p-1 px-2 focus:border-[#5DCFB5]" id="title_notification" name="title_notification" required>
+                    </div>
+                    <div class="flex flex-col gap-1 h-full">
+                        <label for="message_notification" class="text-[#606060] font-medium">Message Notification</label>
+                        <textarea type="text" class="border rounded-xl p-2 px-2 min-h-[200px]"  id="message_notification" name="message_notification" required></textarea>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-[#606060] font-medium">Send to:</label>
+                    <div class="border p-4 rounded-xl overflow-y-scroll h-full">
+                        {% for pengguna in all_pengguna %}
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="{{ pengguna.user.username }}" name="recipients" value="{{ pengguna.user.username }}">
+                            <label class="form-check-label" for="{{ pengguna.user.username }}">{{ pengguna.user.username }}</label>
+                        </div>
+                    {% endfor %}
+                    </div>
+                    <button type="submit" class="bg-[#4A76A2] p-1 py-2 rounded-xl mt-4">
+                        <p class="text-white font-medium ">Send</p>
+                    </button>
+                </div>
+            </form>
+        </div> 
+    </div>
+</div>
+{% endblock content %}
+<!-- <div class="max-w-52 border rounded-xl p-3 bg-white drop-shadow-md self-center min-h-80 ">
+    <p class="font-medium text-xl">Create Notification</p>
+    <form method="post" 
+        enctype="multipart/form-data"
+        class="grid grid-cols-2 gap-5 mt-4 h-full">
+        {% csrf_token %}
+        <div class="flex flex-col gap-4 h-full">
+            <div class="flex flex-col gap-1">
+                <label for="title_notification" class="text-[#606060]">Judul </label>
+                <input type="text" class="border rounded-xl p-1 px-2 focus:border-[#5DCFB5]" id="title_notification" name="title_notification" required>
+            </div>
+            <div class="flex flex-col gap-1 h-full">
+                <label for="message_notification" class="text-[#606060]">Message Notification</label>
+                <textarea type="text" class="border rounded-xl p-1 px-2 h-full"  id="message_notification" name="message_notification" required></textarea>
+            </div>
+        </div>
+        <div class="flex flex-col gap-1">
+            <label class="text-[#606060]">Send to:</label>
+            <div class="border p-4 rounded-xl overflow-y-scroll h-full">
+                {% for pengguna in all_pengguna %}
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="{{ pengguna.user.username }}" name="recipients" value="{{ pengguna.user.username }}">
+                    <label class="form-check-label" for="{{ pengguna.user.username }}">{{ pengguna.user.username }}</label>
+                </div>
+            {% endfor %}
+            </div>
+            <button type="submit" class="bg-[#4A76A2] p-1 text-white rounded-sm hover:bg-white hover:border hover:border-[#4A76A2] hover:text-black mt-4">Send</button>
+        </div>
+    </form>
+</div> -->
+<!-- 
 <div class="content-container d-flex align-items-center justify-content-center mx-auto">
     <div class="container">
         <h2>Create Notification</h2>
@@ -44,7 +159,4 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>        
     </div>
-</div>
-
-
-{% endblock content %}
+</div> -->

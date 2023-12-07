@@ -1,23 +1,23 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<div class="container">
-    <h2 class="mt-2">Notification Inbox</h2>
-    <table class="table" id="serviceTable">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Message</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for notif in all_notification %}
-                <tr id="data_table">
-                    <td>{{ notif.judul }}</td>
-                    <td>{{ notif.pesan }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+<div class="grid justify-items-stretch w-screen min-h-screen">
+	<div class="row-auto justify-self-center relative min-w-[429px] max-w-[429px] min-h-screen overflow-hidden drop-shadow-md bg-white">
+		<div class="flex gap-2 p-3 px-4" >
+            <a href="{% url 'app_pengguna:dashboard_pengguna' %}"><img src="{% static '/images/back-icon.png' %}"  alt="" class="h-6 w-6">               </a>
+            <p>Notification Inbox</p>
+        </div>
 
+        <div>
+            <hr>
+            {% for notif in all_notification %}
+            <div class="p-3">
+                <p class="font-medium">{{ notif.judul }}</p>
+                <p class="text-[#999999]">{{ notif.pesan }}</p>
+            </div>
+            <hr>
+            {% endfor %}
+        </div>
+	</div>
+</div>
 {% endblock content %}
