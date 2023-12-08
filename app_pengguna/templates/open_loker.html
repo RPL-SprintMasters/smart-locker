@@ -1,38 +1,67 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
+{% load static%}
 {% block content %}
-<div class="container">
-    <p></p>
-    <h2 class="text-center">Scan pada mesin untuk membuka loker</h2>
-    <div class="row justify-content-center">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <p class="card-title"><strong>Nama Loker:</strong> {{ loker.grup_loker.nama_loker }}</p>
-                    <p class="card-text"><strong>Alamat Loker:</strong> {{ loker.grup_loker.alamat_loker }}</p>
-                    <p class="card-text"><strong>Harga per 15 menit:</strong> Rp{{ loker.grup_loker.harga_loker }}</p>
-                    <p class="card-text"><strong>Nomor Loker:</strong> {{ loker.nomor_loker }}</p>
-                    {% if message %}
-                        <div class="alert alert-{{message_flag}}">
-                            {{ message }}
-                        </div>
-                        <div class="alert alert-{{message_flag}}" id="messageAddNotif">
-                            Anda akan mendapatkan notifikasi terkini setiap 30 menit saat peminjaman loker
-                        </div>
-                        <button id="okButton" class="btn btn-success">OK</button>
-                        <a id="dashboardButton" href="{% url 'app_pengguna:dashboard_pengguna' %}" class="btn btn-info" style="display:none;">Kembali ke Dashboard</a>
-                    {% endif %}
-                    {% if img_base64 %}
-                        <div class="qr-img">
-                            <img src="data:image/png;base64,{{img_base64}}" alt="qr code" style="width: 100%;">
-                        </div>
-                        <a href="{% url 'app_pengguna:open_loker' loker.id %}" class="btn btn-info">Perbarui tampilan setelah Scan</a>
-                    {% endif %}
+<div class="grid justify-items-stretch w-screen min-h-screen">
+	<div class="row-auto justify-self-center relative min-w-[429px] max-w-[429px] min-h-screen overflow-hidden drop-shadow-md bg-[#F8F8F8] p-4">
+        <p class="text-center text-xl">My Card Locker</p>
+
+        <div class="bg-white rounded-3xl overflow-hidden mt-3">
+            <div class="h-24 overflow-hidden">
+                <img src="{% static '/images/bg-pattern.jpeg' %}"  alt="" class=" h-auto w-full">
+            </div>
+            <div class="p-3 pb-5">
+                <p class="font-bold"> {{ loker.grup_loker.nama_loker }}</p>
+
+                <div class="grid grid-cols-2 mt-3 gap-3">
+                    <div>
+                        <p class="text-[#D9D9D9]">Locker Number</p>
+                        <p>{{ loker.nomor_loker }}</p>
+                    </div>
+                    <div class="">
+                        <p class="text-[#D9D9D9]">Cost(/15 Minutes)</p>
+                        <p>Rp{{ loker.grup_loker.harga_loker }},00</p>
+                    </div>
+                    <div class="col-span-2">
+                        <p class="text-[#D9D9D9]">Place</p>
+                        <p>{{ loker.grup_loker.alamat_loker}}</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>    
-    </form>
+        {% if message %}
+            <div class="flex items-center gap-2 bg-[#CBE4D1] p-2 rounded-xl border border-[#4EC33D] my-3">
+                <div class="text-[#2E6A41]">
+                    <p class="font-bold">
+                        Success
+                    </p>
+                    <p>
+                        {{ message }}
+                    </p>
+                </div>
+            </div>  
+            <div class="text-[#2E6A41] flex items-center gap-2 bg-[#CBE4D1] p-2 rounded-xl border border-[#4EC33D] my-3" id="messageAddNotif">
+                Anda akan mendapatkan notifikasi terkini setiap 30 menit saat peminjaman loker
+            </div>
+            <button id="okButton" class="w-full p-2 rounded-xl bg-[#ECB748]">OK</button>
+            <a id="dashboardButton" href="{% url 'app_pengguna:dashboard_pengguna' %}" class="w-full p-2 rounded-xl bg-[#ECB748] text-center hover:no-underline hover:text-black" style="display:none;">Kembali ke Dashboard</a>
+        {% endif %}
+
+        {% if img_base64 %}
+        <div class="p-4 bg-white rounded-3xl overflow-hidden text-center w-full">
+                <p>Scan Qr to Open Locker</p>
+                <img src="data:image/png;base64,{{img_base64}}" alt="qr code" style="width: 100%;">
+                <a href="{% url 'app_pengguna:open_loker' loker.id %}" class="relative hover:no-underline hover:text-black">
+                   <p class="relative p-2 py-3 bg-[#ECB748] drop-shadow-xl rounded-2xl z-0">Update After Scan Borcode</p>
+                   <span class="absolute -right-1 -top-1 z-100 flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#4EC33D] opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-[#4EC33D]"></span>
+                  </span>
+                </a>
+        </div>
+        {% endif %}
+    </div>
 </div>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
