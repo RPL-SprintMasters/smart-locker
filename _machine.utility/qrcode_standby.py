@@ -14,9 +14,8 @@ def detect_and_print_qr_codes(frame):
         resp = requests.post('https://sprintmasters.up.railway.app/api/from-machine/', json={
             "code_loker": data
         })
-        if (str(requests.status_code).strip() == "200"):
-            pprint(resp.json())
-            raise Exception("Donee!!")
+        pprint(resp.json())
+        raise Exception("Donee!!")
 
 def main():
     cap = cv2.VideoCapture(0)
