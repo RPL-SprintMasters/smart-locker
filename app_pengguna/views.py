@@ -240,7 +240,7 @@ def topup(request):
             paymentMethod = request.POST['paymentMethod']
             
         except:
-            return redirect('app_pengguna:topup')
+            return redirect('app_pengguna:dashboard_pengguna')
         
         topupObj = TopupHistory.objects.create(pengguna=pengguna_obj, status='Pending', tanggal=datetime.datetime.now(),time=time.strftime("%H:%M", time.localtime()),  nominal=nominal, metode_pembayaran=paymentMethod)
         paymentMethod = paymentMethod.lower()
