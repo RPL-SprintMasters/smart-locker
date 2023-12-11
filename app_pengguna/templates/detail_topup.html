@@ -34,7 +34,7 @@
                     <p>Rp{{nominal}}</p>
                 </span>
             </div>
-            {% if active == True %}
+            {% if active == True and status == 'Pending'%}
             <div class="p-3 py-4 bg-white rounded-2xl text-center">
                 <p>Scan To Pay With Gopay</p>
                 <img src="{{url.img_link}}">
