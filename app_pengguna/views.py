@@ -234,11 +234,15 @@ def topup(request):
     context = dict()
 
     if(request.method == "POST"):
-        pengguna_obj = get_object_or_404(Pengguna, user=request.user)
-        nominal = request.POST['nominal']
-        paymentMethod = request.POST['paymentMethod']
+        try:
+            pengguna_obj = get_object_or_404(Pengguna, user=request.user)
+            nominal = request.POST['nominal']
+            paymentMethod = request.POST['paymentMethod']
+            
+        except:
+            return redirect('app_pengguna:topup')
+        
         topupObj = TopupHistory.objects.create(pengguna=pengguna_obj, status='Pending', tanggal=datetime.datetime.now(),time=time.strftime("%H:%M", time.localtime()),  nominal=nominal, metode_pembayaran=paymentMethod)
-
         paymentMethod = paymentMethod.lower()
 
         try:            
