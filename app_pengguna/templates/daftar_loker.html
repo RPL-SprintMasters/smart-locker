@@ -1,45 +1,59 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<div class="container">
-    <h2>{{ judul }}</h2>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <p class="card-title"><strong>Nama Loker:</strong> {{ grup_loker.nama_loker }}</p>
-                    <p class="card-text"><strong>Alamat Loker:</strong> {{ grup_loker.alamat_loker }}</p>
-                    <p class="card-text"><strong>Harga per 15 menit:</strong> Rp{{ grup_loker.harga_loker }}</p>
+<div class="grid justify-items-stretch w-screen min-h-screen">
+ <div class="row-auto justify-self-center relative min-w-[429px] max-w-[429px] min-h-screen overflow-hidden drop-shadow-md bg-[#F8F8F8]">
+        <div class="p-6">
+            <p class="text-center text-xl">Details</p>
+            <span class="flex gap-4 items-center mt-4">
+                <span class="relative flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#477B72] "></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-[#477B72]"></span>
+                </span>
+                <div class="text-xs">
+                    <p class="text-[#929292] font-medium">Nama Loker</p>
+                    <p>{{ grup_loker.nama_loker }}</p>
                 </div>
+            </span>
+            <span class="flex gap-4 items-center mt-4">
+                <span class="relative flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#477B72]"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-[#477B72]"></span>
+                </span>
+                <div class="text-xs">
+                    <p class="text-[#929292] font-medium">Cost</p>
+                    <p>Rp{{ grup_loker.harga_loker }},00</p>
+                </div>
+            </span>
+            <span class="flex gap-4 items-center mt-4">
+                <span class="relative flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#477B72]"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-[#477B72]"></span>
+                </span>
+                <div class="text-xs">
+                    <p class="text-[#929292] font-medium">Location</p>
+                    <p>{{ grup_loker.alamat_loker }}</p>
+                </div>
+            </span>
+        </div>
+        <div class="bg-white h-full rounded-t-3xl p-4 flex-col gap-3">
+            <p>Chose Your Locker</p>
+            <div class="mt-3 flex flex-col gap-2">
+                {% for loker in loker_list %}
+                    <div class="grid grid-cols-5 bg-white drop-shadow-m rounded-lg overflow-hidden drop-shadow-md">
+                        <p class="col-span-1 p-2 bg-[#477B72] text-white text-center font-bold text-xl">{{ loker.nomor_loker }}</p>
+                        {% if from_pinjam_loker %}
+                            <a class=" col-span-4 flex items-center p-2 justify-end gap-2 hover:no-underline text-[#477B72] hover:text-[#888888]" href="#" onclick="konfirmasiPilih('{% url 'app_pengguna:open_loker' loker.id %}')" >
+                                <p>Select</p>  
+                                <img src="{% static '/images/button-right.png' %}"  alt="" class=" h-5 w-auto">
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
             </div>
         </div>
-        <div class="col-md-8">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>No. Loker</th>
-                        <th>Status Loker</th>
-                        {% if from_pinjam_loker %}
-                            <th>Action</th>
-                        {% endif %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for loker in loker_list %}
-                    <tr>
-                        <td>{{ loker.nomor_loker }}</td>
-                        <td>{{ loker.status_loker }}</td>
-                        {% if from_pinjam_loker %}
-                        <td>
-                            <a href="#" class="btn btn-info" onclick="konfirmasiPilih('{% url 'app_pengguna:open_loker' loker.id %}')">Pilih</a>
-                        </td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>    
-    </form>
+ </div>
 </div>
 
 <script>
@@ -53,3 +67,4 @@
     }
 </script>
 {% endblock content %}
+

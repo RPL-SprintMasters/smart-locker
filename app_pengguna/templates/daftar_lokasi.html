@@ -1,28 +1,79 @@
-{% extends 'base_bootstrap.html' %}
+{% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<div class="container">
-    <p></p>
-    <h2>{{ judul }}</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Grup Loker</th>
-                <th>Alamat Loker</th>
-                <th>Harga per 15min</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
+<style>
+    .display {
+        animation: toptodown 500ms forwards ease-in-out;
+    }
+
+    @keyframes toptodown {
+    0% {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+
+
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+    }
+
+</style>
+<div class="grid justify-items-stretch w-screen min-h-screen">
+	<div class="row-auto justify-self-center relative min-w-[429px] max-w-[429px] min-h-screen overflow-hidden drop-shadow-md bg-[#F8F8F8]">
+		<div class="px-4 pt-3 pb-3 w-full bg-white">
+			<div class="flex justify-between w-full">
+				<nav class="bg-white border-gray-200">
+					<div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto">
+						 <button data-collapse-toggle="navbar-dropdown" type="button" class="inline-flex items-center w-10 h-10 justify-center text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-dropdown" aria-expanded="false">
+							<svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+							</svg>
+						</button>
+					</div>
+				</nav>
+            </div>
+			<div class="hidden display w-full keyframes-slideDown" id="navbar-dropdown">
+				<ul class="flex flex-col font-medium p-4  mt-4 border border-gray-100 rounded-lg bg-gray-50 ">
+					<li>
+						<a  href="{% url 'app_pengguna:dashboard_pengguna' %}" class="block py-2 px-3 text-white rounded bg-[#5DCFB5] " aria-current="page">Home</a>
+					</li>
+					<li>
+						<a href="{% url 'app_pengguna:history_topup' %}" class="block py-2 px-3 rounded text-gray-400">History Top Up</a>
+					</li>
+					<li>
+						<a href="{% url 'app_pengguna:hubungi_admin' %}" class="block py-2 px-3 rounded text-gray-400">Hubungin Admin</a>
+					</li>
+					<li>
+						<a href="{% url 'logout' %}" class="block py-2 px-3 rounded text-[#870000]">Log Out</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+        <p class="text-center mt-4 text-xl">Lokasi Loker</p>
+        <div class="p-3 flex flex-col gap-3">
             {% for grup_loker in grup_loker_list %}
-            <tr>
-                <td>{{ grup_loker.nama_loker }}</td>
-                <td>{{ grup_loker.alamat_loker }}</td>
-                <td>Rp{{ grup_loker.harga_loker }}</td>
-                <td><a href="{% url 'app_pengguna:daftar_loker' grup_loker.id %}" class="btn btn-info">{{ action_command }}</a></td>
-            </tr>
+            <a class="bg-white w-full rounded-xl p-4 drop-shadow-sm hover:no-underline	"
+                href="{% url 'app_pengguna:daftar_loker' grup_loker.id %}">
+                <p class="bg-[#5DCFB5] text-white text-xs font-medium rounded-full p-1 text-center w-fit px-4">{{ grup_loker.nama_loker }}</p>
+                <div class=" w-full grid grid-cols-2  ">
+                    <div>
+                        <span class="flex items-end">
+                            <p class="text-2xl font-bold mt-4">+Rp{{ grup_loker.harga_loker }}</p>
+                            <p class="text-xs">/15 menit</p>
+                        </span>
+                    </div>
+                    <div class="p-1 text-xs grid-rows-3 grid-flow-col h-full">
+                        <div class="row-start-2 row-span-2 text-[#A9A9A9]">
+                            <p class="">Location</p>
+                            <p>{{ grup_loker.alamat_loker }}</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
             {% endfor %}
-        </tbody>
-    </table>
-    </form>
+        </div>
+	</div>
 </div>
 {% endblock content %}
