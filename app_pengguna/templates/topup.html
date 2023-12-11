@@ -50,6 +50,7 @@
                 </p>
                 <div class="p-2 border-2 border-[#D9D9D9] hover:border-[#5DCFB5] rounded-xl  flex gap-2">
                     <input class="accent-[#74D4B8]" type="radio" class="" value="Gopay" name="paymentMethod" onclick="updateBorderColorPayment('Gopay')" >
+                        <div class="bg-[#00B3E1] p-1 rounded-lg flex justify-center items-center"><img src="{% static '/images/gopay.png' %}"  alt="" class=" h-2 w-auto"></div>
                         <p>Gopay</p>
                     </input>
                 </div>
@@ -95,7 +96,7 @@
         var paymentValue = selectedPaymentPack ? selectedPaymentPack.value : null;
 
         if(creditPackValue || paymentValue == null){
-            alert("HEHEHE")
+            alert("")
         }
         }
 
