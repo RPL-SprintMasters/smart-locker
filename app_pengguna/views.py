@@ -275,7 +275,7 @@ def topup(request):
 
         except:
             TopupHistory.delete(topupObj)
-            return redirect('app_pengguna:topup')
+            return redirect('app_pengguna:dashboard_pengguna')
 
     return render(request, 'topup.html', context=context)
 
