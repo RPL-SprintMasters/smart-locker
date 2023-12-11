@@ -149,7 +149,7 @@ def close_loker(request, transaksi_id):
     username = request.user.username
     context['username'] = username
 
-    transaksi_peminjaman = TransaksiPeminjaman.objects.filter(id=transaksi_id)[0]
+    transaksi_peminjaman = get_object_or_404(TransaksiPeminjaman, id=transaksi_id)
     loker = transaksi_peminjaman.loker  # transaksi.getLoker()
     
     if (transaksi_peminjaman.status == "FINISHED") and (transaksi_peminjaman.is_scanned_close):

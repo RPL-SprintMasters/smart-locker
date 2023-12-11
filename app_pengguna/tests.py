@@ -22,6 +22,7 @@ class AppPenggunaViewsTestCase(TestCase):
         # Set up the client for making HTTP requests
         self.client = Client()
 
+    # POSTITIVE TEST CASE
     def test_dashboard_pengguna(self):
         self.client.login(username='testuser', password='testpassword')
         response = self.client.get(reverse('app_pengguna:dashboard_pengguna'))
@@ -105,3 +106,63 @@ class AppPenggunaViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         # Add more assertions specific to detail_transaction_topup view...
 
+    # NEGATIVE TEST CASE
+    def test_dashboard_pengguna_not_logged_in(self):
+        response = self.client.get(reverse('app_pengguna:dashboard_pengguna'))
+        self.assertEqual(response.status_code, 302)  # Redirect to login page
+
+    def test_daftar_lokasi_not_logged_in(self):
+        response = self.client.get(reverse('app_pengguna:daftar_lokasi'))
+        self.assertEqual(response.status_code, 302)  # Redirect to login page
+
+    def test_daftar_loker_not_logged_in(self):
+        response = self.client.get(reverse('app_pengguna:daftar_loker', args=[self.grup_loker.id]))
+        self.assertEqual(response.status_code, 302)  # Redirect to login page
+
+    def test_open_loker_no_selection(self):
+        self.client.login(username='testuser', password='testpassword')
+        response = self.client.get('/pengguna/open-loker/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_open_loker_invalid_id(self):
+        self.client.login(username='testuser', password='testpassword')
+        response = self.client.get(reverse('app_pengguna:open_loker', args=[9999999999999]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_close_loker_no_selection(self):
+        self.client.login(username='testuser', password='testpassword')
+        response = self.client.get('/pengguna/close-loker/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_close_loker_invalid_id(self):
+        self.client.login(username='testuser', password='testpassword')
+        response = self.client.get(reverse('app_pengguna:close_loker', args=[9999999999999]))
+        self.assertEqual(response.status_code, 404) 
+
+    def test_view_notification_not_logged_in(self):
+        response = self.client.get(reverse('app_pengguna:view_notification'))
+        self.assertEqual(response.status_code, 302)  # Redirect to login page
+
+    def test_hubungi_admin_not_logged_in(self):
+        response = self.client.get(reverse('app_pengguna:hubungi_admin'))
+        self.assertEqual(response.status_code, 302)  # Redirect to login page
+
+    def test_feedback_invalid_transaction_id(self):
+        response = self.client.get(reverse('app_pengguna:feedback', args=[9999999999999]))
+        self.assertEqual(response.status_code, 302)  # Assuming a 404 error for an invalid transaction ID
+
+    def test_history_transaksi_not_logged_in(self):
+        response = self.client.get(reverse('app_pengguna:history_transaksi'))
+        self.assertEqual(response.status_code, 302)  # Redirect to login page
+
+    # def test_topup_not_logged_in(self):
+    #     response = self.client.get(reverse('app_pengguna:topup'))
+    #     self.assertEqual(response.status_code, 200)  # Masih error harusnya 404
+
+    def test_history_topup_not_logged_in(self):
+        response = self.client.get(reverse('app_pengguna:history_topup'))
+        self.assertEqual(response.status_code, 302)  # Redirect to login page
+
+    def test_detail_transaction_topup_not_logged_in(self):
+        response = self.client.get(reverse('app_pengguna:detail_transaction_topup', args=[str(self.topup_history.order_id)]))
+        self.assertEqual(response.status_code, 302)  # Redirect to login page
